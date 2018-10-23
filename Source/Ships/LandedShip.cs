@@ -153,7 +153,7 @@ namespace OHUShips
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            if (this.Resting)
+            if (this.NightResting)
             {
                 stringBuilder.Append("CaravanResting".Translate());
             }
@@ -163,9 +163,9 @@ namespace OHUShips
             }
             else if (this.pather.Moving)
             {
-                if (this.pather.arrivalAction != null)
+                if (this.pather.ArrivalAction != null)
                 {
-                    stringBuilder.Append(this.pather.arrivalAction.ReportString);
+                    stringBuilder.Append(this.pather.ArrivalAction.ReportString);
                 }
                 else
                 {
@@ -174,7 +174,7 @@ namespace OHUShips
             }
             else
             {
-                Settlement factionBase = CaravanVisitUtility.SettlementVisitedNow(this);
+                var factionBase = CaravanVisitUtility.SettlementVisitedNow(this);
                 if (factionBase != null)
                 {
                     stringBuilder.Append("CaravanVisiting".Translate(new object[]
@@ -211,7 +211,7 @@ namespace OHUShips
                     yield return TravelingShipsUtility.ShipTouchdownCommand(this, true);
                     yield return TravelingShipsUtility.ShipTouchdownCommand(this, false);
                 }
-                Settlement factionBase = CaravanVisitUtility.SettlementVisitedNow(this);
+                var factionBase = CaravanVisitUtility.SettlementVisitedNow(this);
                 if (factionBase != null && factionBase.CanTradeNow)
                 {
                     yield return TravelingShipsUtility.TradeCommand(this);
@@ -231,7 +231,7 @@ namespace OHUShips
                     {
                         foreach (ShipBase ship in this.ships)
                         {
-                            ship.TryLaunch(new GlobalTargetInfo(ship.ParkingPosition, ship.ParkingMap), PawnsArriveMode.CenterDrop, TravelingShipArrivalAction.EnterMapFriendly, false);
+                            ship.TryLaunch(new GlobalTargetInfo(ship.ParkingPosition, ship.ParkingMap), PawnsArrivalModeDefOf.CenterDrop, TravelingShipArrivalAction.EnterMapFriendly, false);
                         }
                     };
                     yield return command_Action4;

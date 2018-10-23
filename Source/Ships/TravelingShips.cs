@@ -3,6 +3,7 @@ using Verse;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using RimWorld;
 using RimWorld.Planet;
@@ -19,7 +20,7 @@ namespace OHUShips
 
         public IntVec3 destinationCell = IntVec3.Invalid;
 
-        public PawnsArriveMode arriveMode;
+        public PawnsArrivalModeDef arriveMode;
 
         public TravelingShipArrivalAction arrivalAction;
 
@@ -194,7 +195,6 @@ namespace OHUShips
             Scribe_Collections.Look<ShipBase>(ref this.ships, "ships", LookMode.Deep, new object[0]);
             Scribe_Values.Look<int>(ref this.destinationTile, "destinationTile", 0, false);
             Scribe_Values.Look<IntVec3>(ref this.destinationCell, "destinationCell", default(IntVec3), false);
-            Scribe_Values.Look<PawnsArriveMode>(ref this.arriveMode, "arriveMode", PawnsArriveMode.Undecided, false);
             Scribe_Values.Look<bool>(ref this.arrived, "arrived", false, false);
             Scribe_Values.Look<int>(ref this.initialTile, "initialTile", 0, false);
             Scribe_Values.Look<float>(ref this.traveledPct, "traveledPct", 0f, false);
@@ -313,8 +313,7 @@ namespace OHUShips
                 }
                 else
                 {
-                    FactionBase factionBase = Find.WorldObjects.FactionBases.Find((FactionBase x) => x.Tile == this.destinationTile);
-                    
+                    var factionBase = Find.WorldObjects.Settlements.Find((x) => x.Tile == destinationTile);
                     if (factionBase != null && factionBase.Faction != Faction.OfPlayer && this.arrivalAction != TravelingShipArrivalAction.StayOnWorldMap)
                     {
                         LongEventHandler.QueueLongEvent(delegate
@@ -324,15 +323,15 @@ namespace OHUShips
                             string extraMessagePart = null;
                             if (this.arrivalAction == TravelingShipArrivalAction.EnterMapAssault && !factionBase.Faction.HostileTo(Faction.OfPlayer))
                             {
-                                factionBase.Faction.SetHostileTo(Faction.OfPlayer, true);
+                                factionBase.Faction.TrySetRelationKind(Faction.OfPlayer, FactionRelationKind.Hostile, true);
                                 extraMessagePart = "MessageTransportPodsArrived_BecameHostile".Translate(new object[]
                                 {
                                 factionBase.Faction.Name
                                 }).CapitalizeFirst();
                             }
                             Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-                            Current.Game.VisibleMap = map2;
-                            Find.CameraDriver.JumpToVisibleMapLoc(map2.Center);
+                            Current.Game.CurrentMap = map2;
+                            Find.CameraDriver.JumpToCurrentMapLoc(map2.Center);
                             this.SpawnShipsInMap(map2, extraMessagePart);
                         }, "GeneratingMapForNewEncounter", false, null);
                     }
@@ -390,13 +389,13 @@ namespace OHUShips
             {
                 intVec = this.destinationCell;
             }
-            else if (this.arriveMode == PawnsArriveMode.CenterDrop)
+            else if (arriveMode.GetType() == typeof(PawnsArrivalModeWorker_CenterDrop))
             {
                 intVec = DropCellFinder.FindRaidDropCenterDistant(map);
             }
             else
             {
-                if (this.arriveMode != PawnsArriveMode.EdgeDrop && this.arriveMode != PawnsArriveMode.Undecided)
+                if (arriveMode.GetType() == typeof(PawnsArrivalModeWorker_EdgeDrop))
                 {
                     Log.Warning("Unsupported arrive mode " + this.arriveMode);
                 }

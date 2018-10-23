@@ -53,7 +53,7 @@ namespace OHUShips
             return gotoShip;
         }
 
-        public override bool TryMakePreToilReservations()
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             throw new NotImplementedException();
         }

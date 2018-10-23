@@ -1,11 +1,7 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -134,7 +130,7 @@ namespace OHUShips
                 if (this.daysWorthOfFoodDirty)
                 {
                     this.daysWorthOfFoodDirty = false;
-                    float first = DropShipUtility.ApproxDaysWorthOfFood_Ship(ship, this.transferables, this.EnvironmentAllowsEatingVirtualPlantsNow);
+                    float first = DropShipUtility.ApproxDaysWorthOfFood_Ship(ship, this.transferables);
                     this.cachedDaysWorthOfFood = new Pair<float, float>(first, DaysUntilRotCalculator.ApproxDaysUntilRot(this.transferables, this.map.Tile, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload));
                 }
                 return this.cachedDaysWorthOfFood;
@@ -145,7 +141,6 @@ namespace OHUShips
         {
             this.map = map;
             this.ship = ship;
-            this.closeOnEscapeKey = true;
             this.forcePause = true;
             this.absorbInputAroundWindow = true;
             OHUShipsModSettings.CargoLoadingActive = true;
@@ -243,8 +238,9 @@ namespace OHUShips
             Rect rect3 = rect2;
             rect3.xMin += rect2.width - this.pawnsTransfer.TotalNumbersColumnsWidths;
             rect3.y += 32f;
-            TransferableUIUtility.DrawMassInfo(rect3, this.MassUsage, this.MassCapacity, "TransportersMassUsageTooltip".Translate(), this.lastMassFlashTime, true);
-            CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect3.x, rect3.y + 22f, rect3.width, rect3.height), this.DaysWorthOfFood.First, this.DaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, true, 3.40282347E+38f);
+            
+//            TransferableUIUtility.DrawMassInfo(rect3, this.MassUsage, this.MassCapacity, "TransportersMassUsageTooltip".Translate(), this.lastMassFlashTime, true);
+//            CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect3.x, rect3.y + 22f, rect3.width, rect3.height), this.DaysWorthOfFood.First, this.DaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, true, 3.40282347E+38f);
             this.DrawPassengerCapacity(rect3);
 
             this.DoBottomButtons(rect2);
@@ -277,7 +273,7 @@ namespace OHUShips
 
         private void AddToTransferables(Thing t, int countAlreadyIn = 0)
         {
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(t, this.transferables);
+            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(t, this.transferables, TransferAsOneMode.PodsOrCaravanPacking);
             if (transferableOneWay == null)
             {
                 transferableOneWay = new TransferableOneWay();
@@ -300,13 +296,13 @@ namespace OHUShips
             Rect rect2 = new Rect(rect.width / 2f - this.BottomButtonSize.x / 2f, rect.height - 55f, this.BottomButtonSize.x, this.BottomButtonSize.y);
             if (Widgets.ButtonText(rect2, "AcceptButton".Translate(), true, false, true) && this.TryAccept())
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera();
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
                 this.Close(false);
             }
             Rect rect3 = new Rect(rect2.x - 10f - this.BottomButtonSize.x, rect2.y, this.BottomButtonSize.x, this.BottomButtonSize.y);
             if (Widgets.ButtonText(rect3, "ResetButton".Translate(), true, false, true))
             {
-                SoundDefOf.TickLow.PlayOneShotOnCamera();
+                SoundDefOf.Tick_Low.PlayOneShotOnCamera();
                 this.CalculateAndRecacheTransferables();
             }
             Rect rect4 = new Rect(rect2.xMax + 10f, rect2.y, this.BottomButtonSize.x, this.BottomButtonSize.y);
@@ -321,13 +317,13 @@ namespace OHUShips
                 Rect rect5 = new Rect(rect.width - num, rect.height - 55f, num, num2);
                 if (Widgets.ButtonText(rect5, "Dev: Load instantly", true, false, true) && this.DebugTryLoadInstantly())
                 {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera();
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera();
                     this.Close(false);
                 }
                 Rect rect6 = new Rect(rect.width - num, rect.height - 55f + num2, num, num2);
                 if (Widgets.ButtonText(rect6, "Dev: Select everything", true, false, true))
                 {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera();
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera();
                     this.SetToLoadEverything();
                 }
             }
@@ -348,12 +344,12 @@ namespace OHUShips
             this.AddPawnsToTransferables();
             this.AddItemsToTransferables();
         //    this.RemoveExistingTransferables();
-            this.pawnsTransfer = new TransferableOneWayWidget(null, Faction.OfPlayer.Name, this.TransportersLabelShort, "FormCaravanColonyThingCountTip".Translate(), true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, true, () => this.MassCapacity - this.MassUsage, 24f, false, true);
+            this.pawnsTransfer = new TransferableOneWayWidget(null, Faction.OfPlayer.Name, this.TransportersLabelShort, "FormCaravanColonyThingCountTip".Translate(), true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, true, () => this.MassCapacity - this.MassUsage, 24f, false, -1, true);
             CaravanUIUtility.AddPawnsSections(this.pawnsTransfer, this.transferables);
 
             this.itemsTransfer = new TransferableOneWayWidget(from x in this.transferables
                                                               where x.ThingDef.category != ThingCategory.Pawn
-                                                              select x, Faction.OfPlayer.Name, this.TransportersLabelShort, "FormCaravanColonyThingCountTip".Translate(), true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, true, () => this.MassCapacity - this.MassUsage, 24f, false, true);
+                                                              select x, Faction.OfPlayer.Name, this.TransportersLabelShort, "FormCaravanColonyThingCountTip".Translate(), true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, true, () => this.MassCapacity - this.MassUsage, 24f, false, -1, true);
             this.CountToTransferChanged();            
         }
 
@@ -519,7 +515,7 @@ namespace OHUShips
         {
             get
             {
-                FactionBase mapParent = Find.WorldObjects.FactionBaseAt(this.ship.Tile);
+                var mapParent = Find.WorldObjects.SettlementAt(this.ship.Tile);
                 if (mapParent != null)
                 {
                     if (mapParent.Faction != Faction.OfPlayer)

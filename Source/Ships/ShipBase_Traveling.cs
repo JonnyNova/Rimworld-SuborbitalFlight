@@ -12,7 +12,7 @@ namespace OHUShips
 {
     public class ShipBase_Traveling : ThingWithComps
     {
-        public PawnsArriveMode pawnArriveMode;
+        public PawnsArrivalModeDef pawnArriveMode;
         public int destinationTile = -1;
         private bool alreadyLeft;
         public bool leavingForTarget;
@@ -51,7 +51,7 @@ namespace OHUShips
         }
 
 
-        public ShipBase_Traveling(ShipBase ship, RimWorld.Planet.GlobalTargetInfo target, PawnsArriveMode arriveMode, TravelingShipArrivalAction arrivalAction = TravelingShipArrivalAction.StayOnWorldMap, bool leavingForTarget = true)
+        public ShipBase_Traveling(ShipBase ship, RimWorld.Planet.GlobalTargetInfo target, PawnsArrivalModeDef arriveMode, TravelingShipArrivalAction arrivalAction = TravelingShipArrivalAction.StayOnWorldMap, bool leavingForTarget = true)
         {
             this.containingShip = ship;
             this.def = ship.compShip.sProps.LeavingShipDef;
@@ -209,7 +209,7 @@ namespace OHUShips
             Scribe_Values.Look<int>(ref this.destinationTile, "destinationTile", 0, false);
             Scribe_Values.Look<IntVec3>(ref this.destinationCell, "destinationCell", default(IntVec3), false);
             Scribe_Values.Look<TravelingShipArrivalAction>(ref this.arrivalAction, "arrivalAction", TravelingShipArrivalAction.StayOnWorldMap, false);
-            Scribe_Values.Look<PawnsArriveMode>(ref this.pawnArriveMode, "pawnArriveMode", PawnsArriveMode.Undecided, false);
+            Scribe_Values.Look<PawnsArrivalModeDef>(ref this.pawnArriveMode, "pawnArriveMode", PawnsArrivalModeDefOf.CenterDrop, false);
 
             Scribe_Values.Look<bool>(ref this.leavingForTarget, "leavingForTarget", true, false);
             Scribe_Values.Look<bool>(ref this.alreadyLeft, "alreadyLeft", false, false);

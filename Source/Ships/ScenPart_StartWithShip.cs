@@ -51,7 +51,7 @@ namespace OHUShips
                 newShip.SetFaction(Faction.OfPlayer);
                 Thing initialFuel = ThingMaker.MakeThing(ShipNamespaceDefOfs.Chemfuel);
                 initialFuel.stackCount = 500;
-                newShip.refuelableComp.Refuel(initialFuel);
+                newShip.refuelableComp.Refuel(new List<Thing>(new Thing[] { initialFuel }));
                 this.StartingShips.Add(newShip);
                 DropShipUtility.LoadNewCargoIntoRandomShips(this.PlayerStartingThings().ToList(), this.StartingShips);
                 DropShipUtility.DropShipGroups(map.Center, map, this.StartingShips, TravelingShipArrivalAction.EnterMapFriendly);

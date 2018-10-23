@@ -40,7 +40,7 @@ namespace OHUShips
             command_Action.icon = DropShipUtility.TradeCommandTex;
             command_Action.action = delegate
             {
-                Settlement factionBase = CaravanVisitUtility.SettlementVisitedNow(caravan);
+                var factionBase = CaravanVisitUtility.SettlementVisitedNow(caravan);
                 if (factionBase != null && factionBase.CanTradeNow)
                 {
                     caravan.UnloadCargoForTrading();
@@ -72,7 +72,7 @@ namespace OHUShips
             command_Settle.icon = settlePermanent ? SettleUtility.SettleCommandTex : DropShipUtility.TouchDownCommandTex;
             command_Settle.action = delegate
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera();
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
                 TravelingShipsUtility.Settle(landedShip, settlePermanent);
             };
             bool flag = false;
@@ -90,9 +90,9 @@ namespace OHUShips
             {
                 command_Settle.Disable("CommandSettleFailOtherWorldObjectsHere".Translate());
             }
-            else if (settlePermanent && SettleUtility.PlayerHomesCountLimitReached)
+            else if (settlePermanent && SettleUtility.PlayerSettlementsCountLimitReached)
             {
-                if (Prefs.MaxNumberOfPlayerHomes > 1)
+                if (Prefs.MaxNumberOfPlayerSettlements > 1)
                 {
                     command_Settle.Disable("CommandSettleFailReachedMaximumNumberOfBases".Translate());
                 }
@@ -140,7 +140,7 @@ namespace OHUShips
                 if (settlePermanent)
                 {
                     vec3 = Find.World.info.initialMapSize;
-                    mapToDropIn = MapGenerator.GenerateMap(vec3, newWorldObject, MapGeneratorDefOf.MainMap, null, null);
+                    mapToDropIn = MapGenerator.GenerateMap(vec3, newWorldObject, MapGeneratorDefOf.Base_Player, null, null);
                 }
                 else if (newWorldObject != null && foundMapParent)
                 {
@@ -150,9 +150,9 @@ namespace OHUShips
                 else
                 {
                     vec3 = new IntVec3(100, 1, 100);
-                    mapToDropIn = MapGenerator.GenerateMap(vec3, newWorldObject, MapGeneratorDefOf.MainMap, null, null);
+                    mapToDropIn = MapGenerator.GenerateMap(vec3, newWorldObject, MapGeneratorDefOf.Base_Player, null, null);
                 }
-                Current.Game.VisibleMap = mapToDropIn;
+                Current.Game.CurrentMap = mapToDropIn;
             }, "GeneratingMap", true, new Action<Exception>(GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap));
             LongEventHandler.QueueLongEvent(delegate
             {
@@ -160,7 +160,7 @@ namespace OHUShips
                 Pawn pawn = landedShip.PawnsListForReading[0];
                 Predicate<IntVec3> extraCellValidator = (IntVec3 x) => x.GetRegion(map).CellCount >= 600;
                 TravelingShipsUtility.EnterMapWithShip(landedShip, map);
-                Find.CameraDriver.JumpToVisibleMapLoc(map.Center);
+                Find.CameraDriver.JumpToCurrentMapLoc(map.Center);
                 Find.MainTabsRoot.EscapeCurrentTab(false);
             }, "SpawningColonists", true, new Action<Exception>(GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap));
         }
@@ -349,7 +349,7 @@ namespace OHUShips
             return false;
         }
 
-        public static void LaunchLandedFleet(LandedShip landedShip, int destinationTile, IntVec3 destinationCell, PawnsArriveMode pawnArriveMode, TravelingShipArrivalAction arrivalAction)
+        public static void LaunchLandedFleet(LandedShip landedShip, int destinationTile, IntVec3 destinationCell, PawnsArrivalModeDef pawnArriveMode, TravelingShipArrivalAction arrivalAction)
         {
             if (destinationTile < 0)
             {

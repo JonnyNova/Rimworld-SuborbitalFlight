@@ -344,7 +344,7 @@ namespace OHUShips
                 TooltipHandler.TipRegion(rect2, "DropThing".Translate());
                 if (Widgets.ButtonImage(rect2, DropShipUtility.DropTexture))
                 {
-                    Verse.Sound.SoundStarter.PlayOneShotOnCamera(SoundDefOf.TickHigh);
+                    Verse.Sound.SoundStarter.PlayOneShotOnCamera(SoundDefOf.Tick_High);
                     this.InterfaceDrop(thing, this.ship);
                 }
                 rect.width -= 24f;

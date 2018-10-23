@@ -23,7 +23,8 @@ namespace OHUShips
         {
             get
             {
-                return TransferableUtility.TransferableMatchingDesperate(this.TargetA.Thing, ship.compShip.leftToLoad);
+                // TODO should this be desperate?
+                return TransferableUtility.TransferableMatchingDesperate(this.TargetA.Thing, ship.compShip.leftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
             }
         }
 
@@ -63,7 +64,7 @@ namespace OHUShips
             yield break;
         }
         
-        public override bool TryMakePreToilReservations()
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             ////Log.Message("Reserving 1");
             //this.pawn.ReserveAsManyAsPossible(this.job.GetTargetQueue(TargetIndex.A), this.job, 1, -1, null);

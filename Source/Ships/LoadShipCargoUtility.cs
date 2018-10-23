@@ -23,7 +23,8 @@ namespace OHUShips
                 
             }
                 Thing thing = LoadShipCargoUtility.FindThingToLoad(p, ship);
-                TransferableOneWay transferable = TransferableUtility.TransferableMatchingDesperate(thing, ship.compShip.leftToLoad);
+                // TODO desperate?
+                TransferableOneWay transferable = TransferableUtility.TransferableMatchingDesperate(thing, ship.compShip.leftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
                 if (thing != null && transferable != null)
                 {
                     int thingCount = transferable.CountToTransfer;
@@ -97,6 +98,7 @@ namespace OHUShips
 
         public static Lord FindLoadLord(ShipBase ship, Map map)
         {
+            if (map == null) return null;
             List<Lord> lords = map.lordManager.lords;
             for (int i = 0; i < lords.Count; i++)
             {

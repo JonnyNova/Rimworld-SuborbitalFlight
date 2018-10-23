@@ -15,7 +15,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
+    <OutputPath>..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,9 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ships\Building_ShipTurret.cs" />
+    <Compile Include="Ships\CompPropertiesShipFuelable.cs" />
     <Compile Include="Ships\CompProperties_Ship.cs" />
     <Compile Include="Ships\CompProperties_ShipWeapon.cs" />
     <Compile Include="Ships\CompShip.cs" />
+    <Compile Include="Ships\CompShipFuelable.cs" />
     <Compile Include="Ships\CompShipWeapon.cs" />
     <Compile Include="Ships\Dialog_LoadShipCargo.cs" />
     <Compile Include="Ships\Dialog_TradeFromShips.cs" />
@@ -105,7 +107,7 @@
     <Compile Include="Ships\WorkGiver_UninstallShipWeapon.cs" />
   </ItemGroup>
   <!--<ItemGroup>-->
-    <!--<Folder Include=".vs\" />-->
+  <!--<Folder Include=".vs\" />-->
   <!--</ItemGroup>-->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

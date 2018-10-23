@@ -18,27 +18,27 @@ namespace OHUShips
             //Log.Error("1");
             HarmonyInstance harmony = HarmonyInstance.Create("rimworld.ohu.ships.main");
 			//Log.Error("2");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.FactionGenerator), "GenerateFactionsIntoWorld"), null, new HarmonyMethod(typeof(HarmonyPatches), "GenerateFactionsIntoWorldPostFix"));
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.FactionGenerator), "GenerateFactionsIntoWorld"), null, new HarmonyMethod(typeof(HarmonyPatches), nameof(GenerateFactionsIntoWorldPostFix)));
 			//Log.Error("3");
             harmony.Patch(AccessTools.Property(typeof(MapPawns), "AnyPawnBlockingMapRemoval").GetGetMethod(false), null, new HarmonyMethod(typeof(HarmonyPatches), nameof(AnyColonistTameAnimalOrPrisonerOfColonyPostFix)), null);
 
 			// harmony.Patch(AccessTools.Property(typeof(TransferableOneWay), "MaxCount").GetGetMethod(false), new HarmonyMethod(typeof(HarmonyPatches), nameof(MaxCountTransferablePostFix)), null);
 			//Log.Error("4");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.GameEnder), "CheckOrUpdateGameOver"), null, new HarmonyMethod(typeof(HarmonyPatches), "CheckGameOverPostfix"));
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.GameEnder), "CheckOrUpdateGameOver"), null, new HarmonyMethod(typeof(HarmonyPatches), nameof(CheckGameOverPostfix)));
 			//Log.Error("5");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.Planet.WorldSelector), "AutoOrderToTileNow", new Type[] { typeof(Caravan), typeof(int) }), new HarmonyMethod(typeof(HarmonyPatches), "AutoOrderToTileNowPrefix"), null);
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.Planet.WorldSelector), "AutoOrderToTileNow", new Type[] { typeof(Caravan), typeof(int) }), new HarmonyMethod(typeof(HarmonyPatches), nameof(AutoOrderToTileNowPrefix)), null);
 			//Log.Error("6");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.Scenario), "GenerateIntoMap", new Type[] { typeof(Map) }), new HarmonyMethod(typeof(HarmonyPatches), "GenerateIntoMapPreFix"), null);
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.Scenario), "GenerateIntoMap", new Type[] { typeof(Map) }), new HarmonyMethod(typeof(HarmonyPatches), nameof(GenerateIntoMapPreFix)), null);
 			//Log.Error("7");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.TransferableOneWayWidget), "AddSection"), new HarmonyMethod(typeof(HarmonyPatches), "AddSectionPrefix"), null);
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.TransferableOneWayWidget), "AddSection"), new HarmonyMethod(typeof(HarmonyPatches), nameof(AddSectionPrefix)), null);
 			//Log.Error("8");
-            harmony.Patch(AccessTools.Method(typeof(CaravanInventoryUtility), "AllInventoryItems"), new HarmonyMethod(typeof(HarmonyPatches), "AllInventoryItemsPrefix"), null);
+            harmony.Patch(AccessTools.Method(typeof(CaravanInventoryUtility), "AllInventoryItems"), new HarmonyMethod(typeof(HarmonyPatches), nameof(AllInventoryItemsPrefix)), null);
 			//Log.Error("9");
-            harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyAddedAndMergedWith", new Type[] { typeof(Thing), typeof(int) }), new HarmonyMethod(typeof(HarmonyPatches), "NotifyAddedAndMergedWithPostfix"), null);
+            harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyAddedAndMergedWith", new Type[] { typeof(Thing), typeof(int) }), new HarmonyMethod(typeof(HarmonyPatches), nameof(NotifyAddedAndMergedWithPostfix)), null);
 			//Log.Error("10");
-            harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyAdded", new Type[] { typeof(Thing) }), new HarmonyMethod(typeof(HarmonyPatches), "NotifyAddedPostfix"), null);
+            harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyAdded", new Type[] { typeof(Thing) }), new HarmonyMethod(typeof(HarmonyPatches), nameof(NotifyAddedPostfix)), null);
 			//Log.Error("11");
-            harmony.Patch(AccessTools.Method(typeof(RimWorld.Transferable), "AdjustTo"),new HarmonyMethod(typeof(HarmonyPatches), "AdjustToPrefix"), null);
+//            harmony.Patch(AccessTools.Method(typeof(RimWorld.Transferable), "AdjustTo"),new HarmonyMethod(typeof(HarmonyPatches), nameof(AdjustToPrefix)), null);
 
         }
 
@@ -98,7 +98,7 @@ namespace OHUShips
         public static void MaxCountTransferablePostFix(TransferableOneWay __instance)
         {
 			//Log.Error("3");
-            Map map = Find.VisibleMap;
+            Map map = Find.CurrentMap;
             List<ShipBase> ships = DropShipUtility.ShipsOnMap(map);
             for (int i=0; i < ships.Count; i++)
             {
@@ -115,7 +115,7 @@ namespace OHUShips
             List<TransferableOneWay> tmp = transferables.ToList();
             for (int i = 0; i < tmp.Count; i++)
             {
-                Dialog_LoadShipCargo.RemoveExistingTransferable(tmp[i], Find.VisibleMap);
+                Dialog_LoadShipCargo.RemoveExistingTransferable(tmp[i], Find.CurrentMap);
                 //tmp[i].AdjustTo(tmp[i].GetMinimum());
             }
         }
@@ -215,7 +215,7 @@ namespace OHUShips
                 if (scenPart != null)
                 {
                     List<List<Thing>> list = new List<List<Thing>>();
-                    foreach (Pawn current in Find.GameInitData.startingPawns)
+                    foreach (Pawn current in Find.GameInitData.startingAndOptionalPawns)
                     {
                         list.Add(new List<Thing>
                 {

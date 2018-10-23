@@ -11,7 +11,7 @@ namespace OHUShips
 {
     public class JobDriver_UninstallShipWeaponSystem : JobDriver
     {
-		public override bool TryMakePreToilReservations()
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
 		{
 			return true;
 			//throw new NotImplementedException();

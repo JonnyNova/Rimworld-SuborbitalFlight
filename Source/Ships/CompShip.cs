@@ -95,7 +95,7 @@ namespace OHUShips
             {
                 this.leftToLoad = new List<TransferableOneWay>();
             }
-            if (TransferableUtility.TransferableMatching<TransferableOneWay>(t.AnyThing, this.leftToLoad) != null)
+            if (TransferableUtility.TransferableMatching<TransferableOneWay>(t.AnyThing, this.leftToLoad, TransferAsOneMode.Normal) != null)
             {
                 Log.Error("Transferable already exists.");
                 return;
@@ -134,7 +134,7 @@ namespace OHUShips
             {
                 return;
             }
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatchingDesperate(t, this.leftToLoad);
+            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatchingDesperate(t, this.leftToLoad, TransferAsOneMode.Normal);
             if (transferableOneWay == null)
             {
                 return;

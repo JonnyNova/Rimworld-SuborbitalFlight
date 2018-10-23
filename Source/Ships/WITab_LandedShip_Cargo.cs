@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -30,6 +31,17 @@ namespace OHUShips
                 return this.SelObject as LandedShip;
             }
         }
+
+        private List<TransferableImmutable> getTransferableImmutables()
+        {
+            return new List<TransferableImmutable>(new[]
+            {
+                new TransferableImmutable
+                {
+                    things = items
+                }
+            });
+        }
         
         protected override void FillTab()
         {
@@ -37,8 +49,7 @@ namespace OHUShips
             this.DrawMassUsage(ref num);
             GUI.BeginGroup(new Rect(0f, num, this.size.x, this.size.y - num));
             this.UpdateItemsList();
-            Pawn pawn = null;
-            CaravanPeopleAndItemsTabUtility.DoRows(this.size, this.items, base.SelCaravan, ref this.scrollPosition, ref this.scrollViewHeight, true, ref pawn, true);
+            CaravanItemsTabUtility.DoRows(this.size, getTransferableImmutables(), base.SelCaravan, ref this.scrollPosition, ref this.scrollViewHeight);
             this.items.Clear();
             GUI.EndGroup();
         }
@@ -47,7 +58,7 @@ namespace OHUShips
         {
             base.UpdateSize();
             this.UpdateItemsList();
-            this.size = CaravanPeopleAndItemsTabUtility.GetSize(this.items, this.PaneTopY, true);
+            this.size = CaravanItemsTabUtility.GetSize(getTransferableImmutables(), this.PaneTopY, true);
             this.items.Clear();
         }
 
@@ -75,7 +86,6 @@ namespace OHUShips
         {
             this.items.Clear();
             this.items.AddRange(landedShip.AllLandedShipCargo);
-            this.items.AddRange(landedShip.PawnsListForReading.Cast<Thing>());
         }
     }
 }

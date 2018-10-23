@@ -5,9 +5,9 @@
   <IncidentDef>
     <defName>AerialRaid</defName>
     <label>enemy raid</label>
-    <targetTypes>
-    <li>MapPlayerHome</li>
-    </targetTypes>
+    <targetTags>
+    <li>Map_PlayerHome</li>
+    </targetTags>
     <workerClass>OHUShips.IncidentWorker_AerialRaid</workerClass>
     <baseChance>0.1</baseChance>
     <category>ThreatBig</category>

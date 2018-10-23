@@ -82,11 +82,12 @@ namespace OHUShips
                 ticks = 0;
             }
 
-            Vector3 result = Gen.TrueCenter(ship);
+            
+            Vector3 result = GenThing.TrueCenter(ship);
 
             if (travelingShip != null)
             {
-                result = Gen.TrueCenter(travelingShip.Position, travelingShip.containingShip.Rotation, travelingShip.containingShip.def.size, Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays));
+                result = GenThing.TrueCenter(travelingShip.Position, travelingShip.containingShip.Rotation, travelingShip.containingShip.def.size, Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays));
             }
             result += DropShipUtility.drawOffsetFor(ship, ticks, false);
 
@@ -153,7 +154,7 @@ namespace OHUShips
                 ticks = 0;
             }
                         
-            Vector3 result = Gen.TrueCenter(ship);
+            Vector3 result = GenThing.TrueCenter(ship);
             if (travelingShip != null)
             {
                 result = travelingShip.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.Skyfaller);
@@ -408,7 +409,7 @@ namespace OHUShips
 
         private static List<TransferableOneWay> tmpTransferables = new List<TransferableOneWay>();
 
-        public static float ApproxDaysWorthOfFood_Ship(ShipBase ship, List<TransferableOneWay> transferables, bool canEatPlants)
+        public static float ApproxDaysWorthOfFood_Ship(ShipBase ship, List<TransferableOneWay> transferables)
         {            
             tmpTransferables.Clear();
 
@@ -433,12 +434,14 @@ namespace OHUShips
                     DropShipUtility.AddThingsToTransferables(tmpTransferables, ship.GetDirectlyHeldThings()[i]);
                 }
             }
-            return DaysWorthOfFoodCalculator.ApproxDaysWorthOfFood(tmpTransferables, canEatPlants, IgnorePawnsInventoryMode.DontIgnore);            
+            
+            var currentWorldPosition = -1; // not used since path is null
+            return DaysWorthOfFoodCalculator.ApproxDaysWorthOfFood(tmpTransferables, currentWorldPosition, IgnorePawnsInventoryMode.DontIgnore, ship.Faction);
         }
 
         private static void AddThingsToTransferables(List<TransferableOneWay> transferables, Thing thing)
         {
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(thing, transferables);
+            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(thing, transferables, TransferAsOneMode.Normal);
             if (transferableOneWay == null)
             {
                 transferableOneWay = new TransferableOneWay();

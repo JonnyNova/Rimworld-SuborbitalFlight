@@ -82,12 +82,10 @@ namespace OHUShips
             IntVec3 dropCenter;
             dropCenter = DropCellFinder.FindRaidDropCenterDistant(map);
 
-            this.ResolveRaidStrategy(parms);
+            this.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
             this.ResolveRaidArriveMode(parms);
-            this.ResolveRaidSpawnCenter(parms);
-            IncidentParmsUtility.AdjustPointsForGroupArrivalParams(parms);
-            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
-            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms, true).ToList<Pawn>();
+            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Combat, parms, true);
+            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms).ToList<Pawn>();
             if (list.Count == 0)
             {
                 Log.Error("Got no pawns spawning raid from parms " + parms);
@@ -108,15 +106,11 @@ namespace OHUShips
             string letterLabel = this.GetLetterLabel(parms);
             string letterText = this.GetLetterText(parms, list);
             PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true);
-            Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, stringBuilder.ToString());
-            if (this.GetLetterDef() == LetterDefOf.ThreatBig)
-            {
-                TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
-            }
+            Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, defaultPawnGroupMakerParms.faction, stringBuilder.ToString());
             this.ResolveRaidParmOptions(parms);
             Lord lord = LordMaker.MakeNewLord(parms.faction, new LordJob_AerialAssault(ships, parms.faction, this.Kidnappers(parms.faction), true, this.UseSappers, this.SmartGrid, this.Stealers(parms.faction)), map, list);
             //Lord lord = LordMaker.MakeNewLord(parms.faction, new LordJob_AssaultColony(parms.faction, true, true, true, true, true), map, list);
-            AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction, map);
+            map.avoidGrid.Regenerate();
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
             if (!PlayerKnowledgeDatabase.IsComplete(ConceptDefOf.ShieldBelts))
             {
