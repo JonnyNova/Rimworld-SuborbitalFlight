@@ -791,7 +791,7 @@ namespace OHUShips
                     };
                     yield return command_Action3;
                 }
-                if (this.ParkingMap != null && this.ReadyForTakeoff)
+                if (this.ParkingMap != null && this.ReadyForTakeoff && Map != ParkingMap && ParkingPosition != Position)
                 {
                     this.LaunchAsFleet = true;
                     Command_Action command_Action4 = new Command_Action();
