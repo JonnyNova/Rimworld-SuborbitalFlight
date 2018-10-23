@@ -116,7 +116,7 @@ Offensive Capabilities: 1x Payload Slot</description>
 	   </weaponSlots>
 
 	 </li>
-      <li Class="CompProperties_Refuelable">
+      <li Class="OHUShips.CompPropertiesShipFuelable">
         <fuelConsumptionRate>7.0</fuelConsumptionRate>
         <fuelCapacity>1500.0</fuelCapacity>
         <fuelFilter>
@@ -220,7 +220,7 @@ Maximum Cargo Capacity: 185 kg</description>
 	   </weaponSlots>
 
 	 </li>
-      <li Class="CompProperties_Refuelable">
+      <li Class="OHUShips.CompPropertiesShipFuelable">
         <fuelConsumptionRate>10.0</fuelConsumptionRate>
         <fuelCapacity>500.0</fuelCapacity>
         <fuelFilter>
@@ -324,7 +324,7 @@ Maximum Cargo Capacity: 80 kg</description>
 	   </weaponSlots>
 
 	 </li>
-      <li Class="CompProperties_Refuelable">
+      <li Class="OHUShips.CompPropertiesShipFuelable">
         <fuelConsumptionRate>0.2</fuelConsumptionRate>
         <fuelCapacity>100.0</fuelCapacity>
         <fuelFilter>
