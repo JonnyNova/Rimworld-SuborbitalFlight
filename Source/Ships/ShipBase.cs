@@ -369,7 +369,13 @@ namespace OHUShips
             {
                 this.shipState = ShipState.Outgoing;
                 ShipBase_Traveling travelingShip = new ShipBase_Traveling(this, target, arriveMode, arrivalAction);
-                GenSpawn.Spawn(travelingShip, this.Position, this.Map);
+
+                var position = Position;
+                var map = Map;
+                DeSpawn();
+                GenSpawn.Spawn(travelingShip, position, map);
+
+                // TODO call method on the other ship
                 if (this.LaunchAsFleet)
                 {
                     foreach (ShipBase current in DropShipUtility.currentShipTracker.ShipsInFleet(this.fleetID))
@@ -378,7 +384,10 @@ namespace OHUShips
                         {
                             current.shipState = ShipState.Outgoing;
                             ShipBase_Traveling travelingShip2 = new ShipBase_Traveling(current, target, arriveMode, arrivalAction);
-                            GenSpawn.Spawn(travelingShip2, current.Position, current.Map);
+                            position = current.Position;
+                            map = current.Map;
+                            current.DeSpawn();
+                            GenSpawn.Spawn(travelingShip2, position, map);
                         }
                     }
                 }
@@ -409,6 +418,7 @@ namespace OHUShips
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
+            Log.Warning("destroying " + ThingID);
             if (mode == DestroyMode.KillFinalize)
             {
                 this.ShipUnload(true);

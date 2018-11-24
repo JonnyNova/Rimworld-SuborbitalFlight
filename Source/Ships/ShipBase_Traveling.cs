@@ -114,8 +114,6 @@ namespace OHUShips
                         {
                             Find.WorldPawns.PassToWorld(pawns[i]);
                         }                        
-
-                        this.Destroy();
                     }
                 }
             }     
@@ -147,10 +145,12 @@ namespace OHUShips
                     }
                 }
             }
-            GenSpawn.Spawn(this.containingShip, base.Position, this.Map, this.containingShip.Rotation);
 
-            this.containingShip.ShipUnload(false, this.dropPawnsOnTochdown, this.dropItemsOnTouchdown);
+            var position = Position;
+            var map = Map;
             this.DeSpawn();
+            GenSpawn.Spawn(containingShip, position, map, containingShip.Rotation);
+            this.containingShip.ShipUnload(false, this.dropPawnsOnTochdown, this.dropItemsOnTouchdown);
         }
 
         private void GroupLeftMap()
