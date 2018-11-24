@@ -63,7 +63,14 @@
     <Compile Include="Ships\Dialog_LoadShipCargo.cs" />
     <Compile Include="Ships\Dialog_TradeFromShips.cs" />
     <Compile Include="Ships\DropShipUtility.cs" />
-    <Compile Include="Ships\HarmonyPatches.cs" />
+    <Compile Include="Ships\Harmony\Harmony_CaravanInventoryUtility.cs" />
+    <Compile Include="Ships\Harmony\Harmony_FactionGenerator.cs" />
+    <Compile Include="Ships\Harmony\Harmony_GameEnder.cs" />
+    <Compile Include="Ships\Harmony\Harmony_MapPawns.cs" />
+    <Compile Include="Ships\Harmony\Harmony_Scenario.cs" />
+    <Compile Include="Ships\Harmony\Harmony_ThingOwner.cs" />
+    <Compile Include="Ships\Harmony\Harmony_TransferableOneWayWidget.cs" />
+    <Compile Include="Ships\Harmony\Harmony_WorldSelector.cs" />
     <Compile Include="Ships\IncidentWorker_AerialRaid.cs" />
     <Compile Include="Ships\ITab_Fleet.cs" />
     <Compile Include="Ships\ITab_ShipCargo.cs" />
@@ -84,6 +91,7 @@
     <Compile Include="Ships\LordToil_LeaveInShip.cs" />
     <Compile Include="Ships\LordToil_LoadShipCargo.cs" />
     <Compile Include="Ships\LordToil_StealForShip.cs" />
+    <Compile Include="Ships\Mod.cs" />
     <Compile Include="Ships\OHUShipsModSettings.cs" />
     <Compile Include="Ships\ScenPart_StartWithShip.cs" />
     <Compile Include="Ships\ShipBase.cs" />
@@ -106,6 +114,9 @@
     <Compile Include="Ships\WorkGiver_InstallShipWeapon.cs" />
     <Compile Include="Ships\WorkGiver_RescuePawnToShip.cs" />
     <Compile Include="Ships\WorkGiver_UninstallShipWeapon.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Ships\Ship" />
   </ItemGroup>
   <!--<ItemGroup>-->
   <!--<Folder Include=".vs\" />-->
