@@ -1,10 +1,7 @@
-﻿using System;
-using Verse;
+﻿using Verse;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using RimWorld;
 using RimWorld.Planet;
 
@@ -12,7 +9,7 @@ namespace OHUShips
 {
     public class TravelingShips : WorldObject
     {
-        public List<ShipBase> ships = new List<ShipBase>();
+        private HashSet<ShipBase> ships = new HashSet<ShipBase>();
 
         private const float TravelSpeed = 0.00025f;
 
@@ -40,7 +37,8 @@ namespace OHUShips
             {
                 if (this.cachedMat == null)
                 {
-                    this.cachedMat = MaterialPool.MatFrom(ships[0].def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, ships[0].DrawColor, WorldMaterials.WorldObjectRenderQueue);
+                    var first = ships.First();
+                    this.cachedMat = MaterialPool.MatFrom(first.def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, first.DrawColor, WorldMaterials.WorldObjectRenderQueue);
                 }
                 return cachedMat;
             }
@@ -138,15 +136,16 @@ namespace OHUShips
         {
             get
             {
-                for (int i = 0; i < this.ships.Count; i++)
+                foreach (var ship in ships)
                 {
-                    ThingOwner innerContainer = this.ships[i].GetDirectlyHeldThings();
-                    for (int j = 0; j < innerContainer.Count; j++)
+                    ThingOwner innerContainer = ship.GetDirectlyHeldThings();
+                    foreach (var thing in innerContainer)
                     {
-                        Pawn pawn = innerContainer[j] as Pawn;
-                        if (pawn != null && pawn.IsColonist && pawn.HostFaction == null)
+                        switch (thing)
                         {
-                            return true;
+                            case Pawn pawn:
+                                if (pawn.IsColonist && pawn.HostFaction == null) return true;
+                                break;
                         }
                     }
                 }
@@ -158,15 +157,15 @@ namespace OHUShips
         {
             get
             {
-                for (int i = 0; i < this.ships.Count; i++)
+                foreach(var ship in ships)
                 {
-                    ThingOwner things = this.ships[i].GetDirectlyHeldThings();
-                    for (int j = 0; j < things.Count; j++)
+                    foreach (var thing in ship.GetDirectlyHeldThings())
                     {
-                        Pawn p = things[j] as Pawn;
-                        if (p != null)
+                        switch (thing)
                         {
-                            yield return p;
+                            case Pawn pawn:
+                                yield return pawn;
+                                break;
                         }
                     }
                 }
@@ -189,10 +188,14 @@ namespace OHUShips
             }
         }
 
+        public IEnumerable<ShipBase> Ships => ships;
+
+        public ShipBase LeadShip => ships.First();
+
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look<ShipBase>(ref this.ships, "ships", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look<ShipBase>(ref this.ships, "ships", LookMode.Deep);
             Scribe_Values.Look<int>(ref this.destinationTile, "destinationTile", 0, false);
             Scribe_Values.Look<IntVec3>(ref this.destinationCell, "destinationCell", default(IntVec3), false);
             Scribe_Values.Look<bool>(ref this.arrived, "arrived", false, false);
@@ -211,18 +214,17 @@ namespace OHUShips
         {
             base.Tick();
             this.BurnFuel();
-            if (this.ships.Count < 1)
-            {
-                this.RemoveAllPawnsFromWorldPawns();
-                this.RemoveAllPods();
-                Find.WorldObjects.Remove(this);
-            }
             this.traveledPct += this.TraveledPctStepPerTick;
             if (this.traveledPct >= 1f)
             {                
                 this.traveledPct = 1f;
                 this.Arrived();
             }
+        }
+
+        public void Remove(ShipBase ship)
+        {
+            ships.Remove(ship);
         }
 
         private void BurnFuel()
@@ -238,7 +240,8 @@ namespace OHUShips
                 }
             }
 
-            this.ships.RemoveAll(x => x.Destroyed);
+            // TODO why is this here?
+//            this.ships.RemoveAll(x => x.Destroyed);
         }
 
         public void AddShip(ShipBase ship, bool justLeftTheMap)
@@ -251,9 +254,9 @@ namespace OHUShips
 
         public bool ContainsPawn(Pawn p)
         {
-            for (int i = 0; i < this.ships.Count; i++)
+            foreach (var ship in ships)
             {
-                if (this.ships[i].GetDirectlyHeldThings().Contains(p))
+                if (ship.GetDirectlyHeldThings().Contains(p))
                 {
                     return true;
                 }
@@ -303,9 +306,9 @@ namespace OHUShips
                 }
                 else if (!this.LandedShipHasCaravanOwner)
                 {
-                    for (int i = 0; i < this.ships.Count; i++)
+                    foreach (var ship in ships)
                     {
-                        this.ships[i].GetDirectlyHeldThings().ClearAndDestroyContentsOrPassToWorld(DestroyMode.Vanish);
+                        ship.GetDirectlyHeldThings().ClearAndDestroyContentsOrPassToWorld(DestroyMode.Vanish);
                     }
                     this.RemoveAllPods();
                     Find.WorldObjects.Remove(this);
@@ -346,9 +349,9 @@ namespace OHUShips
         private void SpawnCaravanAtDestinationTile()
         {
             TravelingShipsUtility.tmpPawns.Clear();
-            for (int i = 0; i < this.ships.Count; i++)
+            foreach (var ship in ships)
             {
-                ThingOwner innerContainer = this.ships[i].GetDirectlyHeldThings();
+                ThingOwner innerContainer = ship.GetDirectlyHeldThings();
             //    Log.Message("SpawningCaravan");
             //    TravelingShipsUtility.MakepawnInfos(innerContainer);
                 for (int j = 0; j < innerContainer.Count; j++)
@@ -389,13 +392,13 @@ namespace OHUShips
             {
                 intVec = this.destinationCell;
             }
-            else if (arriveMode.GetType() == typeof(PawnsArrivalModeWorker_CenterDrop))
+            else if (arriveMode == PawnsArrivalModeDefOf.CenterDrop)
             {
                 intVec = DropCellFinder.FindRaidDropCenterDistant(map);
             }
             else
             {
-                if (arriveMode.GetType() == typeof(PawnsArrivalModeWorker_EdgeDrop))
+                if (arriveMode == PawnsArrivalModeDefOf.EdgeDrop)
                 {
                     Log.Warning("Unsupported arrive mode " + this.arriveMode);
                 }
@@ -418,9 +421,9 @@ namespace OHUShips
         {
             get
             {
-                for (int i = 0; i < this.ships.Count; i++)
+                foreach (var ship in ships)
                 {
-                    ThingOwner innerContainer = this.ships[i].GetDirectlyHeldThings();
+                    ThingOwner innerContainer = ship.GetDirectlyHeldThings();
                     for (int j = 0; j < innerContainer.Count; j++)
                     {
                         Pawn pawn = innerContainer[j] as Pawn;
@@ -439,9 +442,9 @@ namespace OHUShips
 
         private void RemoveAllPawnsFromWorldPawns()
         {
-            for (int i = 0; i < this.ships.Count; i++)
+            foreach (var ship in ships)
             {
-                ThingOwner innerContainer = this.ships[i].GetDirectlyHeldThings();
+                ThingOwner innerContainer = ship.GetDirectlyHeldThings();
                 for (int j = 0; j < innerContainer.Count; j++)
                 {
                     Pawn pawn = innerContainer[j] as Pawn;

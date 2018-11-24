@@ -262,7 +262,7 @@ namespace OHUShips
             }
             return false;
         }
-        public static void DropShipGroups(IntVec3 dropCenter, Map map, List<ShipBase> shipsToDrop, TravelingShipArrivalAction arrivalAction, bool launchdAsSingleShip = false)
+        public static void DropShipGroups(IntVec3 dropCenter, Map map, IEnumerable<ShipBase> shipsToDrop, TravelingShipArrivalAction arrivalAction, bool launchdAsSingleShip = false)
         {
             foreach (ShipBase current in shipsToDrop.Where(x => !DropShipUtility.ShipIsAlreadyDropping(x, map)))
             {

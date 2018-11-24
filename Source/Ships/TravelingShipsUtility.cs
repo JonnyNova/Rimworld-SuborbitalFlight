@@ -275,7 +275,7 @@ namespace OHUShips
                 Find.WorldObjects.Add(caravan);
             }
 
-            foreach (ShipBase current in incomingShips.ships)
+            foreach (ShipBase current in incomingShips.Ships)
             {
                // current.shouldDeepSave = false;
                 List<Thing> passengers = current.GetDirectlyHeldThings().ToList();
@@ -310,17 +310,17 @@ namespace OHUShips
                 caravan.shipsPassengerList.Add(current, passengerIDs);
             }
             string name;
-            if (incomingShips.ships[0].fleetID != -1 && DropShipUtility.currentShipTracker.PlayerFleetManager.ContainsKey(incomingShips.ships[0].fleetID))
+            if (incomingShips.LeadShip.fleetID != -1 && DropShipUtility.currentShipTracker.PlayerFleetManager.ContainsKey(incomingShips.LeadShip.fleetID))
             {
-                name = DropShipUtility.currentShipTracker.PlayerFleetManager[incomingShips.ships[0].fleetID];
+                name = DropShipUtility.currentShipTracker.PlayerFleetManager[incomingShips.LeadShip.fleetID];
             }
             else
             {
-                name = incomingShips.ships[0].ShipNick;
+                name = incomingShips.LeadShip.ShipNick;
             }
             caravan.Name = name;
 
-            caravan.ships.AddRange(incomingShips.ships);
+            caravan.ships.AddRange(incomingShips.Ships);
             foreach (ShipBase ship in caravan.ships)
             {
                 //DropShipUtility.PassWorldPawnsForLandedShip(ship);
@@ -333,15 +333,14 @@ namespace OHUShips
             if (tile >= 0)
             {
                 LandedShip landedFleet = Find.World.worldObjects.AllWorldObjects.FirstOrDefault(x => x.Tile == tile && x.def == ShipNamespaceDefOfs.LandedShip) as LandedShip;
-                if (landedFleet != null)
+                if (landedFleet != null)    
                 {
-                    for (int i = 0; i < incomingShips.ships.Count; i++)
+                    foreach(var ship in incomingShips.Ships) 
                     {
-                        ShipBase ship = incomingShips.ships[i];
                         if (landedFleet.ships[0].fleetID == ship.fleetID)
                         {
                             landedFleet.ships.Add(ship);
-                            incomingShips.ships.Remove(ship);
+                            incomingShips.Remove(ship);
                         }
                     }
                 }
