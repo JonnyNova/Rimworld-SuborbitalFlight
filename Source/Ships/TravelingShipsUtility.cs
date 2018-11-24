@@ -22,10 +22,6 @@ namespace OHUShips
                     landedObject.RemovePawn(landedObject.PawnsListForReading[i]);
                 }
             }
-            while (landedObject.Goods.Count() > 0)
-            {
-
-            }
         }
 
         public static Command TradeCommand(LandedShip caravan)
