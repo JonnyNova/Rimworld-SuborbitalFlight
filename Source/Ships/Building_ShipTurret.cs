@@ -101,16 +101,6 @@ namespace OHUShips
             this.top.DrawTurret();
         }
 
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            IEnumerator<Gizmo> enumerator = base.GetGizmos().GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                Gizmo current = enumerator.Current;
-                yield return current;
-            }
-        }
-
         public override void ExposeData()
         {
             base.ExposeData();

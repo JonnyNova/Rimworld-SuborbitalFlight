@@ -247,18 +247,13 @@ namespace OHUShips
             {
                 return true;
             }
-            IEnumerator<Thing> enumerator = map.listerThings.AllThings.Where(x => x is ShipBase_Traveling).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                ShipBase_Traveling current = enumerator.Current as ShipBase_Traveling;
-                if (current.containingShip == ship)
-                {
-                    return true;
-                }
 
-            }
-            return false;
+            return map.listerThings.AllThings
+                .Where(x => x is ShipBase_Traveling)
+                .Cast<ShipBase_Traveling>()
+                .FirstOrDefault(shipTraveling => shipTraveling.containingShip == ship) != null;
         }
+
         public static void DropShipGroups(IntVec3 dropCenter, Map map, IEnumerable<ShipBase> shipsToDrop, TravelingShipArrivalAction arrivalAction, bool launchdAsSingleShip = false)
         {
             foreach (ShipBase current in shipsToDrop.Where(x => !DropShipUtility.ShipIsAlreadyDropping(x, map)))

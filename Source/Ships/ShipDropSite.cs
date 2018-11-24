@@ -58,11 +58,9 @@ namespace OHUShips
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            IEnumerator<Gizmo> enumerator = base.GetGizmos().GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var gizmo in base.GetGizmos())
             {
-                Gizmo current = enumerator.Current;
-                yield return current;
+                yield return gizmo;
             }
 
             if (!this.Map.listerThings.AllThings.Any(x => x is ShipBase || x is ShipBase_Traveling))

@@ -661,12 +661,11 @@ namespace OHUShips
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn selPawn)
         {
-            IEnumerator<FloatMenuOption> enumerator = base.GetFloatMenuOptions(selPawn).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var menuOption in base.GetFloatMenuOptions(selPawn))
             {
-                FloatMenuOption current = enumerator.Current;
-                yield return current;
-            }     
+                yield return menuOption;
+            }
+
                 Action action = delegate
                 {
                     if (selPawn.CanReach(this, PathEndMode.ClosestTouch, Danger.Deadly))
@@ -730,11 +729,9 @@ namespace OHUShips
         [DebuggerHidden]
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            IEnumerator<Gizmo> enumerator = base.GetGizmos().GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach(var gizmo in base.GetGizmos())
             {
-                Gizmo current = enumerator.Current;
-                yield return current;
+                yield return gizmo;
             }
             if (this.Faction == Faction.OfPlayer)
             {
