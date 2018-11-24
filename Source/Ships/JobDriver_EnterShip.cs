@@ -10,10 +10,12 @@ namespace OHUShips
 {
     public class JobDriver_EnterShip : JobDriver
     {
+        private ShipBase Ship => (ShipBase) TargetA.Thing;
+        
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return true;
-            //throw new NotImplementedException();
+            // TODO consider those with entering jobs
+            return DropShipUtility.HasPassengerSeats(Ship);
         }
 
         [DebuggerHidden]
