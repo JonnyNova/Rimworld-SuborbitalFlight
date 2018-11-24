@@ -29,10 +29,5 @@ namespace OHUShips
             base.PostMake();
             this.compWeapon = base.GetComp<CompShipWeapon>();            
         }
-
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-        }
     }
 }

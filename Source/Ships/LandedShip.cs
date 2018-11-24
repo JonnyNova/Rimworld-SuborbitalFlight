@@ -65,17 +65,6 @@ namespace OHUShips
             }
         }
 
-        public override void Draw()
-        {
-            base.Draw();
-
-        }
-
-        public override void PostRemove()
-        {
-            base.PostRemove();
-        }
-
         public override Texture2D ExpandingIcon
         {
             get

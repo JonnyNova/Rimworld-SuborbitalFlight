@@ -35,11 +35,6 @@ namespace OHUShips
         {
             this.parentShipLoadID = ship.GetUniqueLoadID();
         }
-        
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-        }
 
         public void SwitchTurret(bool active)
         {

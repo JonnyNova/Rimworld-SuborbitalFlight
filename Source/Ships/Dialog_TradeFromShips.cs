@@ -19,11 +19,6 @@ namespace OHUShips
             this.landedShip = landedShip;
         }
 
-        public override void PostOpen()
-        {
-            base.PostOpen();
-        }
-
         public override void DoWindowContents(Rect inRect)
         {
             this.RecacheTradeablblesAndMassCapacity();
