@@ -11,10 +11,12 @@ namespace OHUShips
 {
     public class JobDriver_UninstallShipWeaponSystem : JobDriver
     {
+        private Building_ShipTurret Turret => (Building_ShipTurret) TargetThingA;
+        private ShipBase Ship => (ShipBase) TargetThingB;
+        
         public override bool TryMakePreToilReservations(bool errorOnFailed)
-		{
-			return true;
-			//throw new NotImplementedException();
+        {
+            return Ship.installedTurrets.Any();
 		}
 
         [DebuggerHidden]
@@ -33,9 +35,8 @@ namespace OHUShips
             {
                 initAction = delegate
                 {
-                    ShipBase ship = (ShipBase)TargetB.Thing;
-                    
-                        Building_ShipTurret turret = (Building_ShipTurret)TargetA.Thing;
+                    var ship = Ship;
+                    Building_ShipTurret turret = Turret;
                     if (turret != null && ship.installedTurrets.ContainsValue(turret))
                     {
                         Thing t = ThingMaker.MakeThing(turret.installedByWeaponSystem);
