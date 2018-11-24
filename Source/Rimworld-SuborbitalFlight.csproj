@@ -54,11 +54,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ships\Building_ShipTurret.cs" />
-    <Compile Include="Ships\CompPropertiesShipFuelable.cs" />
     <Compile Include="Ships\CompProperties_Ship.cs" />
     <Compile Include="Ships\CompProperties_ShipWeapon.cs" />
     <Compile Include="Ships\CompShip.cs" />
-    <Compile Include="Ships\CompShipFuelable.cs" />
     <Compile Include="Ships\CompShipWeapon.cs" />
     <Compile Include="Ships\Dialog_LoadShipCargo.cs" />
     <Compile Include="Ships\Dialog_TradeFromShips.cs" />
