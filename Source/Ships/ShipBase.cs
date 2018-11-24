@@ -108,6 +108,14 @@ namespace OHUShips
         public IntVec3 ParkingPosition;
 
         private LandedShip landedShipCached;
+        
+        public bool ShouldSpawnFueled;
+
+        public bool holdFire = true;
+                
+        public bool ActivatedLaunchSequence;
+
+        private bool DeepsaveTurrets = false;
 
         public LandedShip parentLandedShip
         {
@@ -139,14 +147,6 @@ namespace OHUShips
                 return innerContainer.Any(x => x is Pawn && x.Faction == Faction && x.def.race.Humanlike);
             }
         }
-
-        public bool ShouldSpawnFueled;
-
-        public bool holdFire = true;
-                
-        public bool ActivatedLaunchSequence;
-
-        private bool DeepsaveTurrets = false;
 
         public ShipBase()
         {

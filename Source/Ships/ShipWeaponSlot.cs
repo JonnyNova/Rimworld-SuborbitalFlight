@@ -14,6 +14,12 @@ namespace OHUShips
         public WeaponSystemType slotType;
         private int loadID = -1;
 
+        public IntVec3 turretPosOffset;
+
+        public IntVec2 turretMinSize = new IntVec2(1, 1);
+
+        public AltitudeLayer altitudeLayer = AltitudeLayer.ItemImportant;
+        
         private int LoadID
         {
             get
@@ -25,12 +31,6 @@ namespace OHUShips
                 return loadID;
             }                
         }
-
-        public IntVec3 turretPosOffset;
-
-        public IntVec2 turretMinSize = new IntVec2(1, 1);
-
-        public AltitudeLayer altitudeLayer = AltitudeLayer.ItemImportant;
                
         public string GetUniqueLoadID()
         {

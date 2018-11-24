@@ -20,6 +20,7 @@ namespace OHUShips
         private bool dropPawnsOnTochdown = true;
         private bool dropItemsOnTouchdown = false;
         private TravelingShipArrivalAction arrivalAction;
+        public ShipBase containingShip;
 
         public IntVec3 destinationCell = IntVec3.Invalid;
 
@@ -64,8 +65,6 @@ namespace OHUShips
             Rotation = ship.Rotation;
             this.arrivalAction = arrivalAction;
         }
-
-        public ShipBase containingShip;
         
         public override void Draw()
         {

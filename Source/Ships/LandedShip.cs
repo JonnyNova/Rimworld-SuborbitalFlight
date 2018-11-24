@@ -15,6 +15,7 @@ namespace OHUShips
     {
         public List<ShipBase> ships = new List<ShipBase>();
         public Dictionary<ShipBase, List<string>> shipsPassengerList = new Dictionary<ShipBase, List<string>>();
+        private List<Thing> tmpThingsToRemove = new List<Thing>();
 
         public bool isTargeting = false;
 
@@ -250,8 +251,6 @@ namespace OHUShips
                 }
             }
         }
-
-        private List<Thing> tmpThingsToRemove = new List<Thing>();
         
         public void ReloadStockIntoShip()
         {

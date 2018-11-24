@@ -31,6 +31,8 @@ namespace OHUShips
         
         public Material cachedMat;
         
+        private float maxTravelingSpeed = -1;
+        
         public override Material Material
         {
             get
@@ -91,8 +93,6 @@ namespace OHUShips
                 return false;
             }
         }
-
-        private float maxTravelingSpeed = -1;
 
         public float MaxTravelingSpeed
         {

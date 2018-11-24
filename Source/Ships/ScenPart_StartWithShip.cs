@@ -16,6 +16,8 @@ namespace OHUShips
         public ThingDef ShipDef;
 
         private List<Thing> startingCargo = new List<Thing>();
+        
+        private List<ThingDef> shipDefs;
 
         public void AddToStartingCargo(Thing newCargo)
         {
@@ -73,8 +75,6 @@ namespace OHUShips
             }
             return false;
         };
-
-        private List<ThingDef> shipDefs = new List<ThingDef>();
 
         public override void DoEditInterface(Listing_ScenEdit listing)
         {

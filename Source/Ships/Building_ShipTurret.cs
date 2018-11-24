@@ -12,6 +12,12 @@ namespace OHUShips
     public class Building_ShipTurret : Building_TurretGun
     {
         private ShipBase parentShipCached;
+        
+        public string assignedSlotName;
+
+        public ThingDef installedByWeaponSystem;
+
+        private string parentShipLoadID = "";
 
         public ShipBase ParentShip
         {
@@ -24,12 +30,6 @@ namespace OHUShips
                 return parentShipCached;
             }
         }
-        
-        public string assignedSlotName;
-
-        public ThingDef installedByWeaponSystem;
-
-        private string parentShipLoadID = "";
 
         public void AssignParentShip(ShipBase ship)
         {

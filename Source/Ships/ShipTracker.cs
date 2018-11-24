@@ -19,6 +19,16 @@ namespace OHUShips
             Find.WorldObjects.Add(shipTracker);
         }
         
+        private int nextFleetID = 0;
+
+        private int nextWeaponSlotID = 0;
+
+        public Dictionary<int, string> PlayerFleetManager = new Dictionary<int, string>();
+
+        public Dictionary<string, List<ShipBase>> shipsInFlight = new Dictionary<string, List<ShipBase>>();
+
+        public List<ShipBase> AllWorldShips = new List<ShipBase>();
+        
         public override bool SelectableNow
         {
             get
@@ -30,16 +40,6 @@ namespace OHUShips
         public override void Draw()
         {
         }
-
-        private int nextFleetID = 0;
-
-        private int nextWeaponSlotID = 0;
-
-        public Dictionary<int, string> PlayerFleetManager = new Dictionary<int, string>();
-
-        public Dictionary<string, List<ShipBase>> shipsInFlight = new Dictionary<string, List<ShipBase>>();
-
-        public List<ShipBase> AllWorldShips = new List<ShipBase>();
 
         public List<LandedShip> AllLandedShips
         {

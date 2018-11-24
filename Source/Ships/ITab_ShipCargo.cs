@@ -14,16 +14,16 @@ namespace OHUShips
     public class ITab_ShipCargo : ITab
     {
 
-        private const float TopPadding = 20f;
-        
-        private const float ThingIconSize = 28f;
-
         private enum Tab
         {
             Passengers,
             Cargo,
             Weapons
         }
+        
+        private const float TopPadding = 20f;
+        
+        private const float ThingIconSize = 28f;
 
         private ITab_ShipCargo.Tab tab;
 
