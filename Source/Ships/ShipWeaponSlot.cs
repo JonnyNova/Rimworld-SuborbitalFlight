@@ -12,7 +12,6 @@ namespace OHUShips
     {
         public string SlotName;
         public WeaponSystemType slotType;
-        public Vector3 posOffset;
         private int loadID = -1;
 
         private int LoadID
@@ -44,7 +43,6 @@ namespace OHUShips
             Scribe_Values.Look<WeaponSystemType>(ref this.slotType, "slotType", WeaponSystemType.LightCaliber);
             Scribe_Values.Look<IntVec2>(ref this.turretMinSize, "turretMinSize", IntVec2.One);
             Scribe_Values.Look<IntVec3>(ref this.turretPosOffset, "posOffset", IntVec3.Zero);
-            Scribe_Values.Look<Vector3>(ref this.posOffset, "posOffset", Vector3.one);
             Scribe_Values.Look<int>(ref this.loadID, "loadID");
             Scribe_Values.Look<WeaponSystemType>(ref this.slotType, "slotType");
         }
