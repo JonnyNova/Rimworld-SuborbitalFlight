@@ -73,11 +73,9 @@ namespace OHUShips
                 GUI.color = Color.red;
             }
             Text.Font = GameFont.Small;
-            Widgets.Label(rect, "MassCarried".Translate(new object[]
-            {
+            Widgets.Label(rect, "MassCarried".Translate(
                 massUsage.ToString("0.##"),
-                massCapacity.ToString("0.##")
-            }));
+                massCapacity.ToString("0.##")));
             GUI.color = Color.white;
             curY += 22f;
         }

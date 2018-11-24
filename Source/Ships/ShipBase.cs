@@ -533,7 +533,7 @@ namespace OHUShips
                 {
                     if (!DropShipUtility.HasPassengerSeats(this))
                     {
-                        Messages.Message("MessagePassengersFull".Translate(new object[] { pawn.Name, this.ShipNick }), this, MessageTypeDefOf.RejectInput);
+                        Messages.Message("MessagePassengersFull".Translate(pawn.Name.ToStringSafe(), ShipNick), this, MessageTypeDefOf.RejectInput);
                         return false;
                     }
 					if (pawn.Spawned)
@@ -932,10 +932,8 @@ namespace OHUShips
 
                 if (num > this.MaxLaunchDistanceEverPossible(this.LaunchAsFleet))
                 {
-                    Messages.Message("MessageTransportPodsDestinationIsTooFar".Translate(new object[]
-                    {
-                    CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
-                    }), MessageTypeDefOf.RejectInput);
+                    Messages.Message("MessageTransportPodsDestinationIsTooFar"
+                        .Translate(CompLaunchable.FuelNeededToLaunchAtDist(num).ToString("0.#")), MessageTypeDefOf.RejectInput);
                     return false;
                 }
                 if (!(2 * num > this.MaxLaunchDistanceEverPossible(true)))
@@ -977,10 +975,7 @@ namespace OHUShips
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
                 if (!target.WorldObject.Faction.HostileTo(Faction.OfPlayer))
                 {
-                    list.Add(new FloatMenuOption("VisitSettlement".Translate(new object[]
-                    {
-                        target.WorldObject.Label
-                    }), delegate
+                    list.Add(new FloatMenuOption("VisitSettlement".Translate(target.WorldObject.Label), delegate
                     {
                         if (!this.ReadyForTakeoff || this.LaunchAsFleet && DropShipUtility.currentShipTracker.ShipsInFleet(this.fleetID).Any(s => !s.ReadyForTakeoff))
                         {

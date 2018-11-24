@@ -152,7 +152,7 @@ namespace OHUShips
                 this.leftToLoad.Clear();
                 this.leftToLoad = new List<TransferableOneWay>();
               
-                Messages.Message("MessageFinishedLoadingShipCargo".Translate(new object[] { this.ship.ShipNick }), this.parent, MessageTypeDefOf.TaskCompletion);
+                Messages.Message("MessageFinishedLoadingShipCargo".Translate(ship.ShipNick), parent, MessageTypeDefOf.TaskCompletion);
             }
         }
 

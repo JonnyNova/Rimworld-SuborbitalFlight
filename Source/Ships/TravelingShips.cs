@@ -234,7 +234,7 @@ namespace OHUShips
                 ship.refuelableComp.ConsumeFuel(ship.refuelableComp.Props.fuelConsumptionRate / 60f);
                 if (!ship.refuelableComp.HasFuel && !ship.Destroyed)
                 {
-                    Messages.Message("ShipOutOfFuelCrash".Translate(new object[] { ship.ShipNick }), MessageTypeDefOf.ThreatBig);
+                    Messages.Message("ShipOutOfFuelCrash".Translate(ship.ShipNick), MessageTypeDefOf.ThreatBig);
                     ship.Destroy();
                     DropShipUtility.currentShipTracker.AllWorldShips.Remove(ship);
                 }
@@ -281,7 +281,7 @@ namespace OHUShips
                 MapParent parent = Find.World.worldObjects.MapParentAt(this.destinationTile);
                 if (parent != null)
                 {
-                    Messages.Message("MessageBombedSettlement".Translate(new object[] { parent.ToString(), parent.Faction.Name }), parent, MessageTypeDefOf.NeutralEvent);
+                    Messages.Message("MessageBombedSettlement".Translate(parent.ToString(), parent.Faction.Name), parent, MessageTypeDefOf.NeutralEvent);
                     Find.World.worldObjects.Remove(parent);
                 }
                 this.SwitchOriginToDest();
@@ -327,10 +327,7 @@ namespace OHUShips
                             if (this.arrivalAction == TravelingShipArrivalAction.EnterMapAssault && !factionBase.Faction.HostileTo(Faction.OfPlayer))
                             {
                                 factionBase.Faction.TrySetRelationKind(Faction.OfPlayer, FactionRelationKind.Hostile, true);
-                                extraMessagePart = "MessageTransportPodsArrived_BecameHostile".Translate(new object[]
-                                {
-                                factionBase.Faction.Name
-                                }).CapitalizeFirst();
+                                extraMessagePart = "MessageTransportPodsArrived_BecameHostile".Translate(factionBase.Faction.Name).CapitalizeFirst();
                             }
                             Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
                             Current.Game.CurrentMap = map2;

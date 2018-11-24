@@ -214,10 +214,7 @@ namespace OHUShips
             Rect rect = new Rect(0f, 0f, inRect.width, 40f);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, "LoadTransporters".Translate(new object[]
-            {
-                this.TransportersLabelFull
-            }));
+            Widgets.Label(rect, "LoadTransporters".Translate(TransportersLabelFull));
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             Dialog_LoadShipCargo.tabsList.Clear();
@@ -402,7 +399,7 @@ namespace OHUShips
                Lord newLord = LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_LoadShipCargo(this.ship), this.map, list);
             }
             ship.compShip.cargoLoadingActive = true;
-            Messages.Message("MessageShipCargoLoadStarted".Translate( new object[] { ship.ShipNick }), ship, MessageTypeDefOf.NeutralEvent);
+            Messages.Message("MessageShipCargoLoadStarted".Translate(ship.ShipNick), ship, MessageTypeDefOf.NeutralEvent);
             return true;
         }
 
@@ -450,10 +447,7 @@ namespace OHUShips
             Pawn pawn = pawns.Find((Pawn x) => !x.MapHeld.reachability.CanReach(x.PositionHeld, this.ship, PathEndMode.Touch, TraverseParms.For(TraverseMode.PassDoors, Danger.Deadly, false)));
             if (pawn != null)
             {
-                Messages.Message("PawnCantReachTransporters".Translate(new object[]
-                {
-                    pawn.LabelShort
-                }).CapitalizeFirst(), MessageTypeDefOf.RejectInput);
+                Messages.Message("PawnCantReachTransporters".Translate(pawn.LabelShort).CapitalizeFirst(), MessageTypeDefOf.RejectInput);
                 return false;
             }
             Map map = this.ship.Map;
@@ -481,18 +475,14 @@ namespace OHUShips
                         {
                             if (CountToTransfer == 1)
                             {
-                                Messages.Message("TransporterItemIsUnreachableSingle".Translate(new object[]
-                                {
-                                    this.transferables[i].ThingDef.label
-                                }), MessageTypeDefOf.RejectInput);
+                                Messages.Message("TransporterItemIsUnreachableSingle"
+                                    .Translate(transferables[i].ThingDef.label), MessageTypeDefOf.RejectInput);
                             }
                             else
                             {
-                                Messages.Message("TransporterItemIsUnreachableMulti".Translate(new object[]
-                                {
-                                    CountToTransfer,
-                                    this.transferables[i].ThingDef.label
-                                }), MessageTypeDefOf.RejectInput);
+                                Messages.Message("TransporterItemIsUnreachableMulti"
+                                    .Translate(CountToTransfer, transferables[i].ThingDef.label),
+                                    MessageTypeDefOf.RejectInput);
                             }
                             return false;
                         }

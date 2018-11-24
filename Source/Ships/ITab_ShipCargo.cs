@@ -241,10 +241,7 @@ namespace OHUShips
                 ShipWeaponSlot installingSlot = ship.weaponsToInstall.FirstOrDefault(x => x.Key == currentWeapon.Key).Key;
                 if (installingSlot != null)
                 {
-                    Widgets.Label(rect3, "InstallingShipWeapon".Translate(new object[]
-                        {
-                        ship.weaponsToInstall[installingSlot].LabelCap
-                        }));
+                    Widgets.Label(rect3, "InstallingShipWeapon".Translate(ship.weaponsToInstall[installingSlot].LabelCap));
                 }
                 else
                 {
@@ -320,10 +317,7 @@ namespace OHUShips
             }
             else if (ship.weaponsToInstall.Any(x => x.Key == currentWeapon.Key))
             {
-                Widgets.Label(rect3, "InstallingShipWeapon".Translate(new object[]
-                    {
-                        currentWeapon.Value.LabelCap
-                    }));
+                Widgets.Label(rect3, "InstallingShipWeapon".Translate(currentWeapon.Value.LabelCap));
             }
             else
             {

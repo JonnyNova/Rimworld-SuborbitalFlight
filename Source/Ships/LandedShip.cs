@@ -177,10 +177,7 @@ namespace OHUShips
                 var factionBase = CaravanVisitUtility.SettlementVisitedNow(this);
                 if (factionBase != null)
                 {
-                    stringBuilder.Append("CaravanVisiting".Translate(new object[]
-                    {
-                        factionBase.Label
-                    }));
+                    stringBuilder.Append("CaravanVisiting".Translate(factionBase.Label));
                 }
                 else
                 {

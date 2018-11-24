@@ -53,20 +53,8 @@ namespace OHUShips
             {
                 return null;
             }
-            ShipBase ship = null;
             Log.Message(allShips.Count.ToString());
             return allShips.RandomElement();
-            //if (allShips.TryRandomElementByWeight<ShipBase>((ShipBase x) => 100 / x.Position.DistanceToSquared(pawn.Position), out ship))
-            //{
-            //    Log.Message("Found");
-            //    return ship;
-            //}
-            //else
-            //{
-
-            //    Log.Message("NotFoundShips");
-            //    return null;
-            //}
         }
     }
 }
