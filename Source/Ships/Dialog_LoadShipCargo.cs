@@ -160,37 +160,30 @@ namespace OHUShips
             }
         }
 
-        public static void RemoveExistingTransferable(TransferableOneWay transferable, Map map = null, ShipBase ship = null)
+        public static void RemoveExistingTransferableItems(
+            TransferableOneWay transferable,
+            ShipBase ship)
         {
-            List<Thing> thingsInCargoToRemov = new List<Thing>();
-            List<ShipBase> tmpShips = new List<ShipBase>();
-            if (ship != null)
-            {
-                tmpShips.Add(ship);
-            }
-            else if (map != null)
-            {
-                tmpShips = DropShipUtility.ShipsOnMap(map);
-            }
-            else
-            {
-                Log.Error("Tried removing transferables with neither ship nor map specified");
-            }
+            RemoveExistingTransferableItems(transferable, new List<ShipBase>(new[] {ship}));
+        }
 
-            for (int j = 0; j < transferable.things.Count; j++)
+        public static void RemoveExistingTransferableItems(
+            TransferableOneWay transferable,
+            IEnumerable<ShipBase> ships)
+        {
+            foreach (var currentShip in ships)
             {
-                for (int k = 0; k < tmpShips.Count; k++)
+                foreach (var thing in transferable.things)
                 {
-                    Thing thing = tmpShips[k].GetDirectlyHeldThings().FirstOrDefault(x => x == (transferable.things[j]));
-                    if (thing != null)
-                    {
-                        Log.Message("FoundCargo");
-                        thingsInCargoToRemov.Add(transferable.things[j]);
-                        //                  transferable.CountToTransfer -= transferable.things[j].stackCount;
-                    }
+                    if (currentShip.GetDirectlyHeldThings().Contains(thing))
+                        transferable.things.Remove(thing);
                 }
             }
-            transferable.things.RemoveAll(x => thingsInCargoToRemov.Contains(x));
+        }
+
+        public static void RemoveExistingTransferableItems(TransferableOneWay transferable, Map map)
+        {
+            RemoveExistingTransferableItems(transferable, DropShipUtility.ShipsOnMap(map));
         }
 
         private int PawnsToTransfer
@@ -407,7 +400,7 @@ namespace OHUShips
         {
             for (int i = 0; i < transferables.Count; i++)
             {
-                Dialog_LoadShipCargo.RemoveExistingTransferable(transferables[i], null, ship);
+                RemoveExistingTransferableItems(transferables[i], ship);
                 if (transferables[i].CountToTransfer > 0)
                 {
                     ship.compShip.AddToTheToLoadList(transferables[i], transferables[i].CountToTransfer);

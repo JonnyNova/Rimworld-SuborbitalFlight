@@ -15,12 +15,14 @@ namespace OHUShips.Harmony
             static void Prefix(
                 TransferableOneWayWidget __instance, 
                 string title,
-                IEnumerable<TransferableOneWay> transferables)
+                ref IEnumerable<TransferableOneWay> transferables)
             {
-                foreach (var transferable in transferables)
+                var copy = transferables.ToList();
+                foreach (var transferable in copy)
                 {
-                    Dialog_LoadShipCargo.RemoveExistingTransferable(transferable, Find.CurrentMap);
+                    Dialog_LoadShipCargo.RemoveExistingTransferableItems(transferable, Find.CurrentMap);
                 }
+                transferables = copy;
             }
         }
     }
