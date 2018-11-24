@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Harmony;
 using RimWorld;
@@ -14,16 +13,12 @@ namespace OHUShips.Harmony
             [HarmonyPostfix]
             static void Postfix()
             {
-                //Log.Error("5");
-                List<TravelingShips> travelingShips = Find.WorldObjects.AllWorldObjects.FindAll(x => x is TravelingShips).Cast<TravelingShips>().ToList();
-                for (int i=0; i < travelingShips.Count; i++)
-                {
-                    TravelingShips ship = travelingShips[i];
-                    if (ship.containsColonists)
-                    {
-                        Find.GameEnder.gameEnding = false;
-                    }
-                }
+                var colonistsTraveling = Find.WorldObjects.AllWorldObjects
+                    .FindAll(x => x is TravelingShips)
+                    .Cast<TravelingShips>()
+                    .Any(ship => ship.containsColonists);
+                if(colonistsTraveling)
+                    Find.GameEnder.gameEnding = false;
             }
         }
     }

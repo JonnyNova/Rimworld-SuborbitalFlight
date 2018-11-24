@@ -4,14 +4,10 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using OHUShips.Harmony;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
-using Verse.Sound;
 
 namespace OHUShips
 {
@@ -48,8 +44,7 @@ namespace OHUShips
                 ShipTracker tracker = Find.WorldObjects.AllWorldObjects.FirstOrDefault(x => x.def == ShipNamespaceDefOfs.ShipTracker) as ShipTracker;
                 if (tracker == null)
                 {
-                    // TODO is this really needed?
-                    Harmony_FactionGenerator.Patch_GenerateFactionsIntoWorld.Postfix();
+                    ShipTracker.GenerateTracker();
                     return Find.WorldObjects.AllWorldObjects.FirstOrDefault(x => x.def == ShipNamespaceDefOfs.ShipTracker) as ShipTracker;
                 }
                 return tracker;

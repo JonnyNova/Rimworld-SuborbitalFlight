@@ -10,11 +10,11 @@ namespace OHUShips.Harmony
         {
             static void Postfix(ref ThingOwner __instance, Thing item, int mergedCount)
             {
-                //Log.Error("9");
-                ShipBase ship = __instance.Owner as ShipBase;
-                if (ship != null)
+                switch (__instance.Owner)
                 {
-                    ship.compShip.NotifyItemAdded(item, mergedCount);
+                    case ShipBase ship:
+                        ship.compShip.NotifyItemAdded(item, mergedCount);
+                        break;
                 }
             }
         }
@@ -25,11 +25,11 @@ namespace OHUShips.Harmony
             [HarmonyPostfix]
             static void Postfix(ThingOwner __instance, Thing item)
             {
-                //Log.Error("10");
-                ShipBase ship = __instance.Owner as ShipBase;
-                if (ship != null)
+                switch (__instance.Owner)
                 {
-                    ship.compShip.NotifyItemAdded(item, item.stackCount);
+                    case ShipBase ship:
+                        ship.compShip.NotifyItemAdded(item, item.stackCount);
+                        break;
                 }
             }
         }

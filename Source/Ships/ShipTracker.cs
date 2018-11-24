@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -10,6 +7,18 @@ namespace OHUShips
 {
     public class ShipTracker : WorldObject
     {
+        public static void GenerateTracker()
+        {
+            ShipTracker shipTracker = (ShipTracker)WorldObjectMaker.MakeWorldObject(ShipNamespaceDefOfs.ShipTracker);
+            int tile = 0;
+            while (!(Find.WorldObjects.AnyWorldObjectAt(tile) || Find.WorldGrid[tile].biome == BiomeDefOf.Ocean))
+            {
+                tile = Rand.Range(0, Find.WorldGrid.TilesCount);
+            }
+            shipTracker.Tile = tile;
+            Find.WorldObjects.Add(shipTracker);
+        }
+        
         public override bool SelectableNow
         {
             get
@@ -145,5 +154,7 @@ namespace OHUShips
             Scribe_Collections.Look<int, string>(ref this.PlayerFleetManager, "PlayerFleetManager", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look<ShipBase>(ref this.AllWorldShips, "AllWorldShips", LookMode.Reference, new object[0]);            
         }
+
+        
     }
 }

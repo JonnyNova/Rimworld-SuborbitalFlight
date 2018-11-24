@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Harmony;
@@ -16,38 +15,34 @@ namespace OHUShips.Harmony
             [HarmonyPrefix]
             static bool Prefix(ref Caravan caravan, ref List<Thing> __result)
             {
-                //Log.Error("2");
-                __result = new List<Thing>();
-                List<Pawn> pawnsListForReading = caravan.PawnsListForReading;
-                for (int i = 0; i < pawnsListForReading.Count; i++)
+                switch (caravan)
                 {
-                    Pawn pawn = pawnsListForReading[i];
-                    for (int j = 0; j < pawn.inventory.innerContainer.Count; j++)
-                    {
-                        Thing item = pawn.inventory.innerContainer[j];
-                        __result.Add(item);
-                    }
-                }
-                LandedShip landedShip = caravan as LandedShip;
-
-                Predicate<Thing> cargoValidator = delegate (Thing t)
-                {
-                    Pawn pawn = t as Pawn;
-                    if (pawn != null)
-                    {
-                        if (pawn.IsColonist || pawn.records.GetAsInt(RecordDefOf.TimeAsColonistOrColonyAnimal) > 0)
+                    case LandedShip ship:
+                        
+                        __result = new List<Thing>();
+                        foreach (var pawn in caravan.PawnsListForReading)
                         {
-                            return false;
+                            foreach (var item in pawn.inventory.innerContainer)
+                            {
+                                __result.Add(item);
+                            }
                         }
-                    }
-                    return true;
-                };
+                        __result.AddRange(ship.AllLandedShipCargo.Where(thing =>
+                        {
+                            switch (thing)
+                            {
+                                case Pawn pawn:
+                                    // TODO part 2 might lead to unexpected results 
+                                    if (pawn.IsColonist || pawn.records.GetAsInt(RecordDefOf.TimeAsColonistOrColonyAnimal) > 0)
+                                        return false;
+                                    break;
+                            }
 
-                if (landedShip != null)
-                {
-                    __result.AddRange(landedShip.AllLandedShipCargo.Where(x => cargoValidator(x)));
-                }            
-                return false;
+                            return true;
+                        }));
+                        return false;
+                }
+                return true;
             }
         }
     }

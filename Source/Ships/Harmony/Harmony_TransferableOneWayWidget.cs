@@ -11,17 +11,15 @@ namespace OHUShips.Harmony
         [HarmonyPatch(typeof(TransferableOneWayWidget), nameof(TransferableOneWayWidget.AddSection))]
         static class Patch_AddSection
         {
+            [HarmonyPrefix]
             static void Prefix(
                 TransferableOneWayWidget __instance, 
                 string title,
                 IEnumerable<TransferableOneWay> transferables)
             {
-                //Log.Error("4");
-                List<TransferableOneWay> tmp = transferables.ToList();
-                for (int i = 0; i < tmp.Count; i++)
+                foreach (var transferable in transferables)
                 {
-                    Dialog_LoadShipCargo.RemoveExistingTransferable(tmp[i], Find.CurrentMap);
-                    //tmp[i].AdjustTo(tmp[i].GetMinimum());
+                    Dialog_LoadShipCargo.RemoveExistingTransferable(transferable, Find.CurrentMap);
                 }
             }
         }

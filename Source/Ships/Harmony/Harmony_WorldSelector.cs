@@ -10,13 +10,13 @@ namespace OHUShips.Harmony
         {
             static bool Prefix(Caravan c, int tile)
             {
-                //Log.Error("7");
-                LandedShip ship = c as LandedShip;
-                if (ship != null)
+                switch (c)
                 {
-                    return false;
+                    case LandedShip ship: 
+                        return false;
+                    default: 
+                        return true;
                 }
-                return true;
             }
         }
     }

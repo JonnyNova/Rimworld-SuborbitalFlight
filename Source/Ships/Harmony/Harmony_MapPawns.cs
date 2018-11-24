@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Harmony;
 using Verse;
 
@@ -6,24 +8,21 @@ namespace OHUShips.Harmony
 {
     public class Harmony_MapPawns
     {
+        private static bool IsShipOnMap(Map map)
+        {
+            return map.listerBuildings.ColonistsHaveBuilding(thing => thing.GetType() == typeof(ShipBase)) 
+                   || map.listerThings.AllThings.FirstIndexOf(thing => thing.GetType() == typeof(ShipBase_Traveling)) > 0;
+        }
+        
         [HarmonyPatch(typeof(MapPawns), nameof(MapPawns.AnyPawnBlockingMapRemoval))]
         [HarmonyPatch(MethodType.Getter)]
         static class Patch_AnyPawnBlockingMapRemoval
         {
-            static void Postfix(ref bool __result, MapPawns __instance)
+            static void Postfix(ref bool __result, MapPawns __instance, Map ___map)
             {
-                //Log.Error("1");
-                if (!__result)
+                if (!__result && IsShipOnMap(___map))
                 {
-                    Map map = Traverse.Create(__instance).Field("map").GetValue<Map>();
-                    if (map != null)
-                    {
-                        List<Thing> list = map.listerThings.AllThings.FindAll(x => x is ShipBase_Traveling || x is ShipBase);
-                        if (list.Count > 0)
-                        {
-                            __result = true;
-                        }
-                    }
+                    __result = true;
                 }
             }
         }
