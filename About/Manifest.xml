@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Manifest>
+    <identifier>FrontierDevelopments-SuborbitalFlight</identifier>
+    <version>0.0.0.2096</version>
+    <dependencies>
+    </dependencies>
+    <incompatibleWith>
+    </incompatibleWith>
+    <loadBefore>
+    </loadBefore>
+    <loadAfter>
+    </loadAfter>
+    <suggests>
+    </suggests>
+    <showCrossPromotions>true</showCrossPromotions>
+    <manifestUri>https://raw.githubusercontent.com/JonnyNova/Rimworld-SuborbitalFlight/master/About/Manifest.xml</manifestUri>
+    <downloadUri>https://github.com/JonnyNova/Rimworld-SuborbitalFlight/releases/latest</downloadUri>
+</Manifest>

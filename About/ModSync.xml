@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModSyncNinjaData>
+  <ID>f98c8253-4041-4f84-870f-306cee27fb21</ID>
+  <ModName>Shield Generators by Frontier Developments</ModName>
+  <Version>0.0.0.2059</Version>
+  <SaveBreaking>False</SaveBreaking>
+  <Host name="Github">
+    <Owner>JonnyNova</Owner>
+    <Project>Rimworld-SuborbitalFlight</Project>
+    <AboutDir>About</AboutDir>
+    <DownloadFrom>ModSyncReleases</DownloadFrom>
+    <Branch>master</Branch>
+  </Host>
+</ModSyncNinjaData>

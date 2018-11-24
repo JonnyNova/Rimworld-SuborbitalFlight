@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OHUShips", "Source\OHUShips.csproj", "{CBF85EFA-5337-4817-A8FE-4674E0CA189F}"
+Project("{fa618fd2-8f5b-44c3-8d5d-5017107fa51a}") = "Rimworld-SuborbitalFlight", "Source\Rimworld-SuborbitalFlight.csproj", "{1ddb7225-db81-46e2-b18a-326a95ad0ba4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CBF85EFA-5337-4817-A8FE-4674E0CA189F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBF85EFA-5337-4817-A8FE-4674E0CA189F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBF85EFA-5337-4817-A8FE-4674E0CA189F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBF85EFA-5337-4817-A8FE-4674E0CA189F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ddb7225-db81-46e2-b18a-326a95ad0ba4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ddb7225-db81-46e2-b18a-326a95ad0ba4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ddb7225-db81-46e2-b18a-326a95ad0ba4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ddb7225-db81-46e2-b18a-326a95ad0ba4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

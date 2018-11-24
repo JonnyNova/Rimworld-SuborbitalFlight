@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>OHU Ships</name>
-  <author>Ohu</author>
-  <targetVersion>1.0.2059</targetVersion>
-  <description>1.57 A mod that adds aircraft for suborbital jumps to the game. B18 Update by Swenzi.</description>
+  <name>Suborbital Flight by Frontier Developments</name>
+  <author>JonnyNova and Jetpack Maniac</author>
+  <targetVersion>1.0.2096</targetVersion>
+  <description>
+Adds aircraft for suborbital flight in to the game.
+Credits:
+  Ohu - forked from OHU-Ships
+  Swenzi - B18 update of OHU-Ships
+  </description>
 </ModMetaData>
