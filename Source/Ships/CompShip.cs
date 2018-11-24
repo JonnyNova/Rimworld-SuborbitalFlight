@@ -20,7 +20,7 @@ namespace OHUShips
         {
             get
             {
-                return (ShipBase)this.parent;
+                return (ShipBase)parent;
             }
         }
 
@@ -28,7 +28,7 @@ namespace OHUShips
         {
             get
             {
-                return this.props as CompProperties_Ship;
+                return props as CompProperties_Ship;
             }
         }
 
@@ -44,7 +44,7 @@ namespace OHUShips
         {
             get
             {
-                return ContentFinder<Texture2D>.Get(this.sProps.FleetIconGraphicPath, true);
+                return ContentFinder<Texture2D>.Get(sProps.FleetIconGraphicPath, true);
             }
         }
 
@@ -52,11 +52,11 @@ namespace OHUShips
         {
             get
             {
-                if (this.leftToLoad.NullOrEmpty())
+                if (leftToLoad.NullOrEmpty())
                 {
                     return null;
                 }
-                TransferableOneWay transferableOneWay = this.leftToLoad.Find((TransferableOneWay x) => x.CountToTransfer > 0 && x.HasAnyThing);
+                TransferableOneWay transferableOneWay = leftToLoad.Find((TransferableOneWay x) => x.CountToTransfer > 0 && x.HasAnyThing);
                 if (transferableOneWay != null)
                 {
                     return transferableOneWay.AnyThing;
@@ -69,7 +69,7 @@ namespace OHUShips
         {
             get
             {
-                return this.FirstThingLeftToLoad != null;
+                return FirstThingLeftToLoad != null;
             }
         }
 
@@ -86,11 +86,11 @@ namespace OHUShips
 
         public bool CancelLoadCargo(Map map)
         {
-            if (!this.cargoLoadingActive)
+            if (!cargoLoadingActive)
             {
                 return false;
             }
-            this.TryRemoveLord(map);
+            TryRemoveLord(map);
             return true;
         }
 
@@ -101,14 +101,14 @@ namespace OHUShips
                 //Log.Message("NoThingsToTransfer");
                 return;
             }
-            if (TransferableUtility.TransferableMatching<TransferableOneWay>(t.AnyThing, this.leftToLoad, TransferAsOneMode.Normal) != null)
+            if (TransferableUtility.TransferableMatching<TransferableOneWay>(t.AnyThing, leftToLoad, TransferAsOneMode.Normal) != null)
             {
                 Log.Error("Transferable already exists.");
                 return;
             }
 
             TransferableOneWay transferableOneWay = new TransferableOneWay();
-            this.leftToLoad.Add(transferableOneWay);
+            leftToLoad.Add(transferableOneWay);
             transferableOneWay.things.AddRange(t.things);
             transferableOneWay.AdjustTo(count);
         }
@@ -130,17 +130,17 @@ namespace OHUShips
         public void Notify_PawnEntered(Pawn p)
         {
             p.ClearMind(true);
-            this.SubtractFromToLoadList(p, 1);
+            SubtractFromToLoadList(p, 1);
         }
 
         public void SubtractFromToLoadList(Thing t, int count)
         {
-            //Log.Message("Remaining transferables: " + this.leftToLoad.Count.ToString() + " with Pawns:" + this.leftToLoad.FindAll(x => x.AnyThing is Pawn).Count.ToString());
-            if (this.leftToLoad == null)
+            //Log.Message("Remaining transferables: " + leftToLoad.Count.ToString() + " with Pawns:" + leftToLoad.FindAll(x => x.AnyThing is Pawn).Count.ToString());
+            if (leftToLoad == null)
             {
                 return;
             }
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatchingDesperate(t, this.leftToLoad, TransferAsOneMode.Normal);
+            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatchingDesperate(t, leftToLoad, TransferAsOneMode.Normal);
             if (transferableOneWay == null)
             {
                 return;
@@ -148,14 +148,14 @@ namespace OHUShips
             transferableOneWay.AdjustBy(-count);
             if (transferableOneWay.CountToTransfer <= 0)
             {
-                this.leftToLoad.Remove(transferableOneWay);
+                leftToLoad.Remove(transferableOneWay);
             }
 
-            if (!this.AnythingLeftToLoad)
+            if (!AnythingLeftToLoad)
             {
-                this.cargoLoadingActive = false;
-                this.TryRemoveLord(this.parent.Map);
-                this.leftToLoad.Clear();
+                cargoLoadingActive = false;
+                TryRemoveLord(parent.Map);
+                leftToLoad.Clear();
               
                 Messages.Message("MessageFinishedLoadingShipCargo".Translate(ship.ShipNick), parent, MessageTypeDefOf.TaskCompletion);
             }
@@ -163,13 +163,13 @@ namespace OHUShips
 
         public void NotifyItemAdded(Thing t, int count = 0)
         {
-            this.SubtractFromToLoadList(t, count);
+            SubtractFromToLoadList(t, count);
         }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Collections.Look<ShipWeaponSlot>(ref this.sProps.weaponSlots, "weaponSlots", LookMode.Deep);
+            Scribe_Collections.Look<ShipWeaponSlot>(ref sProps.weaponSlots, "weaponSlots", LookMode.Deep);
         }
     }
 }

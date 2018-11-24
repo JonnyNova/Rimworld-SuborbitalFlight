@@ -11,7 +11,7 @@ namespace OHUShips
     {
         public CompProperties_Ship()
         {
-            this.compClass = typeof(CompShip);
+            compClass = typeof(CompShip);
         }
 
         public int TicksToImpact = 600;

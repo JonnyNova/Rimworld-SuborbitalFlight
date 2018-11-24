@@ -38,28 +38,28 @@ namespace OHUShips
             //toil.AddFailCondition(() => ShipFull(ship));
             toil.tickAction += delegate
             {
-                if (this.ShipFull(ship))
+                if (ShipFull(ship))
                 {
-                    this.EndJobWith(JobCondition.Incompletable);
+                    EndJobWith(JobCondition.Incompletable);
                 }
             };
             yield return toil;
             yield return Toils_Construct.UninstallIfMinifiable(TargetIndex.A).FailOnSomeonePhysicallyInteracting(TargetIndex.A);
-            Toil toilPickup = Toils_Haul.StartCarryThing(TargetIndex.A, false, true);//.FailOn(() => this.ShipFull(ship));
+            Toil toilPickup = Toils_Haul.StartCarryThing(TargetIndex.A, false, true);//.FailOn(() => ShipFull(ship));
             yield return toilPickup;
             yield return Toils_Haul.JumpIfAlsoCollectingNextTargetInQueue(toil, TargetIndex.A);
             Toil toil2 = Toils_Haul.CarryHauledThingToContainer();
 
             toil2.tickAction += delegate
             {
-                if (this.ShipFull(ship, false))
+                if (ShipFull(ship, false))
                 {
-                    this.EndJobWith(JobCondition.Incompletable);
+                    EndJobWith(JobCondition.Incompletable);
                 }
             };
             yield return toil2;
             Toil toil3 = Toils_Haul.DepositHauledThingInContainer(TargetIndex.B, TargetIndex.None);
-            //toil3.AddFailCondition(() => this.ShipFull(ship));
+            //toil3.AddFailCondition(() => ShipFull(ship));
             yield return toil3;
             yield break;
         }
@@ -67,11 +67,11 @@ namespace OHUShips
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             ////Log.Message("Reserving 1");
-            //this.pawn.ReserveAsManyAsPossible(this.job.GetTargetQueue(TargetIndex.A), this.job, 1, -1, null);
+            //pawn.ReserveAsManyAsPossible(job.GetTargetQueue(TargetIndex.A), job, 1, -1, null);
             ////Log.Message("Reserving 2");
-            //this.pawn.ReserveAsManyAsPossible(this.job.GetTargetQueue(TargetIndex.B), this.job, 10, 1, null);
+            //pawn.ReserveAsManyAsPossible(job.GetTargetQueue(TargetIndex.B), job, 10, 1, null);
             ////Log.Message("Reserving 3");
-            return this.pawn.Reserve(this.job.GetTarget(TargetIndex.A), this.job, 1, -1, null);// && this.pawn.Reserve(this.job.GetTarget(TargetIndex.B), this.job, 20, 1, null);
+            return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null);// && pawn.Reserve(job.GetTarget(TargetIndex.B), job, 20, 1, null);
         }
 
 
@@ -89,11 +89,11 @@ namespace OHUShips
             CompShip compShip = ship.compShip;
                 if (transferable != null)
                 {
-                    if (firstCheck && this.job.count > transferable.CountToTransfer)
+                    if (firstCheck && job.count > transferable.CountToTransfer)
                     {
                         return true;
                     }
-                    if (!firstCheck && this.TargetA.Thing.stackCount > transferable.CountToTransfer)
+                    if (!firstCheck && TargetA.Thing.stackCount > transferable.CountToTransfer)
                     {
                         return true;
                     }

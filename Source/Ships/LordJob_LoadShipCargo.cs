@@ -36,14 +36,14 @@ namespace OHUShips
             transition.AddTrigger(new Trigger_PawnLost());
             
             transition.AddPreAction(new TransitionAction_Message("MessageFailedToLoadTransportersBecauseColonistLost".Translate(), MessageTypeDefOf.NegativeEvent));
-            transition.AddPreAction(new TransitionAction_Custom(new Action(this.CancelLoadingProcess)));
+            transition.AddPreAction(new TransitionAction_Custom(new Action(CancelLoadingProcess)));
             stateGraph.AddTransition(transition);
 
             Transition endTransition = new Transition(loadToil, lordToil_End);
             endTransition.AddTrigger(new Trigger_TicksPassed(TimeOutTick));
             endTransition.AddTrigger(new Trigger_PawnsExhausted());
             endTransition.AddPreAction(new TransitionAction_Custom(new Action(delegate {
-                this.CancelLoadingProcess();
+                CancelLoadingProcess();
             })));
             stateGraph.AddTransition(endTransition);
             return stateGraph;
@@ -51,13 +51,13 @@ namespace OHUShips
 
         private void CancelLoadingProcess()
         {
-            this.ship.compShip.CancelLoadCargo(this.Map);
+            ship.compShip.CancelLoadCargo(Map);
         }
         
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_References.Look<ShipBase>(ref this.ship, "ship");
+            Scribe_References.Look<ShipBase>(ref ship, "ship");
         }
     }
 }

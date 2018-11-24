@@ -40,7 +40,7 @@ namespace OHUShips
                     if (turret != null && ship.installedTurrets.ContainsValue(turret))
                     {
                         Thing t = ThingMaker.MakeThing(turret.installedByWeaponSystem);
-                        GenSpawn.Spawn(t, TargetA.Thing.Position, this.Map);
+                        GenSpawn.Spawn(t, TargetA.Thing.Position, Map);
                         ship.weaponsToUninstall.RemoveAll(x => x.Value == turret);
                         ship.installedTurrets[turret.Slot] = null;
                         ship.assignedTurrets.Remove(turret);

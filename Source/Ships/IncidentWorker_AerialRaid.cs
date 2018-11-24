@@ -57,11 +57,11 @@ namespace OHUShips
         {
             if (parms.raidStrategy.Worker.GetType() == typeof(RaidStrategyWorker_ImmediateAttackSappers))
             {
-                this.UseSappers = true;
+                UseSappers = true;
             }
             else if (parms.raidStrategy.Worker.GetType() == typeof(RaidStrategyWorker_ImmediateAttackSmart))
             {
-                this.SmartGrid = true;
+                SmartGrid = true;
             }
         }
 
@@ -73,8 +73,8 @@ namespace OHUShips
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            this.ResolveRaidPoints(parms);
-            if (!this.TryResolveRaidFaction(parms))
+            ResolveRaidPoints(parms);
+            if (!TryResolveRaidFaction(parms))
             {
                 return false;
             }
@@ -82,8 +82,8 @@ namespace OHUShips
             IntVec3 dropCenter;
             dropCenter = DropCellFinder.FindRaidDropCenterDistant(map);
 
-            this.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
-            this.ResolveRaidArriveMode(parms);
+            ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
+            ResolveRaidArriveMode(parms);
             PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Combat, parms, true);
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms).ToList<Pawn>();
             if (list.Count == 0)
@@ -103,12 +103,12 @@ namespace OHUShips
                 string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                 stringBuilder.AppendLine(current2.KindLabel + " - " + str);
             }
-            string letterLabel = this.GetLetterLabel(parms);
-            string letterText = this.GetLetterText(parms, list);
-            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true);
-            Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, defaultPawnGroupMakerParms.faction, stringBuilder.ToString());
-            this.ResolveRaidParmOptions(parms);
-            Lord lord = LordMaker.MakeNewLord(parms.faction, new LordJob_AerialAssault(ships, parms.faction, this.Kidnappers(parms.faction), true, this.UseSappers, this.SmartGrid, this.Stealers(parms.faction)), map, list);
+            string letterLabel = GetLetterLabel(parms);
+            string letterText = GetLetterText(parms, list);
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, GetRelatedPawnsInfoLetterText(parms), true);
+            Find.LetterStack.ReceiveLetter(letterLabel, letterText, GetLetterDef(), target, defaultPawnGroupMakerParms.faction, stringBuilder.ToString());
+            ResolveRaidParmOptions(parms);
+            Lord lord = LordMaker.MakeNewLord(parms.faction, new LordJob_AerialAssault(ships, parms.faction, Kidnappers(parms.faction), true, UseSappers, SmartGrid, Stealers(parms.faction)), map, list);
             //Lord lord = LordMaker.MakeNewLord(parms.faction, new LordJob_AssaultColony(parms.faction, true, true, true, true, true), map, list);
             map.avoidGrid.Regenerate();
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);

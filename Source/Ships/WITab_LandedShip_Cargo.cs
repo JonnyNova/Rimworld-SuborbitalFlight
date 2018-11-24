@@ -21,14 +21,14 @@ namespace OHUShips
 
         public WITab_LandedShip_Cargo()
         {
-            this.labelKey = "ShipCargo";
+            labelKey = "ShipCargo";
         }
 
         public LandedShip landedShip
         {
             get
             {
-                return this.SelObject as LandedShip;
+                return SelObject as LandedShip;
             }
         }
 
@@ -46,26 +46,26 @@ namespace OHUShips
         protected override void FillTab()
         {
             float num = 0f;
-            this.DrawMassUsage(ref num);
-            GUI.BeginGroup(new Rect(0f, num, this.size.x, this.size.y - num));
-            this.UpdateItemsList();
-            CaravanItemsTabUtility.DoRows(this.size, getTransferableImmutables(), base.SelCaravan, ref this.scrollPosition, ref this.scrollViewHeight);
-            this.items.Clear();
+            DrawMassUsage(ref num);
+            GUI.BeginGroup(new Rect(0f, num, size.x, size.y - num));
+            UpdateItemsList();
+            CaravanItemsTabUtility.DoRows(size, getTransferableImmutables(), base.SelCaravan, ref scrollPosition, ref scrollViewHeight);
+            items.Clear();
             GUI.EndGroup();
         }
 
         protected override void UpdateSize()
         {
             base.UpdateSize();
-            this.UpdateItemsList();
-            this.size = CaravanItemsTabUtility.GetSize(getTransferableImmutables(), this.PaneTopY, true);
-            this.items.Clear();
+            UpdateItemsList();
+            size = CaravanItemsTabUtility.GetSize(getTransferableImmutables(), PaneTopY, true);
+            items.Clear();
         }
 
         private void DrawMassUsage(ref float curY)
         {
             curY += 10f;
-            Rect rect = new Rect(10f, curY, this.size.x - 10f, 100f);
+            Rect rect = new Rect(10f, curY, size.x - 10f, 100f);
             float massUsage = base.SelCaravan.MassUsage;
             float massCapacity = landedShip.allLandedShipMassCapacity;
             if (massUsage > massCapacity)
@@ -82,8 +82,8 @@ namespace OHUShips
 
         private void UpdateItemsList()
         {
-            this.items.Clear();
-            this.items.AddRange(landedShip.AllLandedShipCargo);
+            items.Clear();
+            items.AddRange(landedShip.AllLandedShipCargo);
         }
     }
 }

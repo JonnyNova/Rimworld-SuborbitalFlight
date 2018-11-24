@@ -33,13 +33,13 @@ namespace OHUShips
             {
                 return false;
             }
-            Thing thing = this.FindShip(pawn);
+            Thing thing = FindShip(pawn);
             return thing != null && pawn2.CanReserve(thing, 1, -1, null, false);
         }
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Pawn pawn2 = t as Pawn;
-            Thing t2 = this.FindShip(pawn);
+            Thing t2 = FindShip(pawn);
             return new Job(ShipNamespaceDefOfs.RescueToShip, pawn2, t2)
             {
                 count = 1

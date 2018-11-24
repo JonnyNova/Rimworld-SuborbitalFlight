@@ -23,7 +23,7 @@ namespace OHUShips
             yield return Toils_Haul.CarryHauledThingToContainer();
             yield return Toils_Goto.Goto(TargetIndex.B, PathEndMode.ClosestTouch);
 
-            Toil leaving = JobDriver_LeaveInShip.EnterShip(this.GetActor(), ship);
+            Toil leaving = JobDriver_LeaveInShip.EnterShip(GetActor(), ship);
             leaving.AddFinishAction(delegate
             {
                 if (ship.pilotPresent)

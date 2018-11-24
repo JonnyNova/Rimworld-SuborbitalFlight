@@ -27,25 +27,25 @@ namespace OHUShips
 
         public ShipBase_Traveling()
         {
-            this.Rotation = Rot4.North;
-            this.containingShip = new ShipBase();
+            Rotation = Rot4.North;
+            containingShip = new ShipBase();
         }
 
         public ShipBase_Traveling(ShipBase ship)
         {
-            this.Rotation = Rot4.North;
-            this.containingShip = ship;
-            this.leavingForTarget = false;
+            Rotation = Rot4.North;
+            containingShip = ship;
+            leavingForTarget = false;
         }
 
         public ShipBase_Traveling(ShipBase ship, bool launchAsFleet = false, TravelingShipArrivalAction arrivalAction = TravelingShipArrivalAction.StayOnWorldMap)
         {
-            this.containingShip = ship;
-            this.def = ship.compShip.sProps.LeavingShipDef;
-            this.def.size = ship.def.size;
-            this.def.graphicData = ship.def.graphicData;
+            containingShip = ship;
+            def = ship.compShip.sProps.LeavingShipDef;
+            def.size = ship.def.size;
+            def.graphicData = ship.def.graphicData;
             this.launchAsFleet = launchAsFleet;
-            this.Rotation = ship.Rotation;
+            Rotation = ship.Rotation;
 
             this.arrivalAction = arrivalAction;
         }
@@ -53,15 +53,15 @@ namespace OHUShips
 
         public ShipBase_Traveling(ShipBase ship, RimWorld.Planet.GlobalTargetInfo target, PawnsArrivalModeDef arriveMode, TravelingShipArrivalAction arrivalAction = TravelingShipArrivalAction.StayOnWorldMap, bool leavingForTarget = true)
         {
-            this.containingShip = ship;
-            this.def = ship.compShip.sProps.LeavingShipDef;
-            this.def.size = ship.def.size;
-            this.def.graphicData = ship.def.graphicData;
-            this.destinationTile = target.Tile;
-            this.destinationCell = target.Cell;
-            this.pawnArriveMode = arriveMode;
+            containingShip = ship;
+            def = ship.compShip.sProps.LeavingShipDef;
+            def.size = ship.def.size;
+            def.graphicData = ship.def.graphicData;
+            destinationTile = target.Tile;
+            destinationCell = target.Cell;
+            pawnArriveMode = arriveMode;
             this.leavingForTarget = leavingForTarget;
-            this.Rotation = ship.Rotation;
+            Rotation = ship.Rotation;
             this.arrivalAction = arrivalAction;
         }
 
@@ -69,20 +69,20 @@ namespace OHUShips
         
         public override void Draw()
         {
-            this.containingShip.DrawAt(DropShipUtility.DrawPosAt(this.containingShip, this.containingShip.drawTickOffset, this));
-            foreach (KeyValuePair<ShipWeaponSlot, Building_ShipTurret> current in this.containingShip.installedTurrets)
+            containingShip.DrawAt(DropShipUtility.DrawPosAt(containingShip, containingShip.drawTickOffset, this));
+            foreach (KeyValuePair<ShipWeaponSlot, Building_ShipTurret> current in containingShip.installedTurrets)
             {
                 if (current.Value != null)
                 {
                     current.Value.Draw();
                 }
             }
-            DropShipUtility.DrawDropSpotShadow(this.containingShip, this.containingShip.drawTickOffset, this);
+            DropShipUtility.DrawDropSpotShadow(containingShip, containingShip.drawTickOffset, this);
         }
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.containingShip.compShip.TryRemoveLord(map);
+            containingShip.compShip.TryRemoveLord(map);
         }
 
         public override void Tick()
@@ -90,26 +90,26 @@ namespace OHUShips
             base.Tick();
             if (containingShip.shipState == ShipState.Incoming)
             {
-                this.containingShip.drawTickOffset--;
-                if (this.containingShip.drawTickOffset <= 0)
+                containingShip.drawTickOffset--;
+                if (containingShip.drawTickOffset <= 0)
                 {
-                    this.ShipImpact();
+                    ShipImpact();
                 }
-                this.containingShip.refuelableComp.ConsumeFuel(this.containingShip.refuelableComp.Props.fuelConsumptionRate / 60f);
+                containingShip.refuelableComp.ConsumeFuel(containingShip.refuelableComp.Props.fuelConsumptionRate / 60f);
             }
             
-            if (this.containingShip.shipState == ShipState.Outgoing)
+            if (containingShip.shipState == ShipState.Outgoing)
             {
-                this.containingShip.drawTickOffset++;
-                if (this.containingShip.drawTickOffset >= containingShip.compShip.sProps.TicksToDespawn)
+                containingShip.drawTickOffset++;
+                if (containingShip.drawTickOffset >= containingShip.compShip.sProps.TicksToDespawn)
                 {
-                    if (this.leavingForTarget)
+                    if (leavingForTarget)
                     {
-                        this.GroupLeftMap();
+                        GroupLeftMap();
                     }
                     else
                     {
-                        List<Pawn> pawns = DropShipUtility.AllPawnsInShip(this.containingShip);
+                        List<Pawn> pawns = DropShipUtility.AllPawnsInShip(containingShip);
                         for (int i=0; i < pawns.Count; i++)
                         {
                             Find.WorldPawns.PassToWorld(pawns[i]);
@@ -121,8 +121,8 @@ namespace OHUShips
 
         private void ShipImpact()
         {
-       //     Log.Message("ShipImpact at " + this.Position.ToString() + " with truecenter" + Gen.TrueCenter(this).ToString() + " and ticks: " + this.containingShip.drawTickOffset.ToString());
-            this.containingShip.shipState = ShipState.Stationary;
+       //     Log.Message("ShipImpact at " + Position.ToString() + " with truecenter" + Gen.TrueCenter(this).ToString() + " and ticks: " + containingShip.drawTickOffset.ToString());
+            containingShip.shipState = ShipState.Stationary;
 
             for (int i = 0; i < 6; i++)
             {
@@ -130,7 +130,7 @@ namespace OHUShips
                 MoteMaker.ThrowDustPuff(loc, base.Map, 1.2f);
             }
             MoteMaker.ThrowLightningGlow(base.Position.ToVector3Shifted(), base.Map, 2f);
-            RoofDef roof = this.Position.GetRoof(this.Map);
+            RoofDef roof = Position.GetRoof(Map);
             if (roof != null)
             {
                 if (!roof.soundPunchThrough.NullOrUndefined())
@@ -148,26 +148,26 @@ namespace OHUShips
 
             var position = Position;
             var map = Map;
-            this.DeSpawn();
+            DeSpawn();
             GenSpawn.Spawn(containingShip, position, map, containingShip.Rotation);
-            this.containingShip.ShipUnload(false, this.dropPawnsOnTochdown, this.dropItemsOnTouchdown);
+            containingShip.ShipUnload(false, dropPawnsOnTochdown, dropItemsOnTouchdown);
         }
 
         private void GroupLeftMap()
         {            
-            if (this.destinationTile < 0)
+            if (destinationTile < 0)
             {
-                Log.Error("Drop pod left the map, but its destination tile is " + this.destinationTile);
-                this.Destroy(DestroyMode.Vanish);
+                Log.Error("Drop pod left the map, but its destination tile is " + destinationTile);
+                Destroy(DestroyMode.Vanish);
                 return;
             }
             TravelingShips travelingShips = (TravelingShips)WorldObjectMaker.MakeWorldObject(ShipNamespaceDefOfs.TravelingSuborbitalShip);
             travelingShips.Tile = base.Map.Tile;
-            travelingShips.SetFaction(this.Faction);
-            travelingShips.destinationTile = this.destinationTile;
-            travelingShips.destinationCell = this.destinationCell;
-            travelingShips.arriveMode = this.pawnArriveMode;
-            travelingShips.arrivalAction = this.arrivalAction;
+            travelingShips.SetFaction(Faction);
+            travelingShips.destinationTile = destinationTile;
+            travelingShips.destinationCell = destinationCell;
+            travelingShips.arriveMode = pawnArriveMode;
+            travelingShips.arrivalAction = arrivalAction;
             Find.WorldObjects.Add(travelingShips);
             Predicate<Thing> predicate = delegate (Thing t)
             {
@@ -188,32 +188,32 @@ namespace OHUShips
             for (int i = 0; i < tmpleavingShips.Count; i++)
             {
                 ShipBase_Traveling dropPodLeaving = tmpleavingShips[i] as ShipBase_Traveling;
-                if (dropPodLeaving != null && dropPodLeaving.fleetID == this.fleetID)
+                if (dropPodLeaving != null && dropPodLeaving.fleetID == fleetID)
                 {
                     dropPodLeaving.alreadyLeft = true;
                     travelingShips.AddShip(dropPodLeaving.containingShip, true);
                     dropPodLeaving.Destroy(DestroyMode.Vanish);
                 }
             }
-            travelingShips.AddShip(this.containingShip, true);
-            travelingShips.SetFaction(this.containingShip.Faction);
+            travelingShips.AddShip(containingShip, true);
+            travelingShips.SetFaction(containingShip.Faction);
             
-            this.Destroy(DestroyMode.Vanish);
+            Destroy(DestroyMode.Vanish);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            Scribe_Values.Look<int>(ref this.fleetID, "fleetID", 0, false);
-            Scribe_Values.Look<int>(ref this.destinationTile, "destinationTile", 0, false);
-            Scribe_Values.Look<IntVec3>(ref this.destinationCell, "destinationCell", default(IntVec3), false);
-            Scribe_Values.Look<TravelingShipArrivalAction>(ref this.arrivalAction, "arrivalAction", TravelingShipArrivalAction.StayOnWorldMap, false);
-            Scribe_Values.Look<PawnsArrivalModeDef>(ref this.pawnArriveMode, "pawnArriveMode", PawnsArrivalModeDefOf.CenterDrop, false);
+            Scribe_Values.Look<int>(ref fleetID, "fleetID", 0, false);
+            Scribe_Values.Look<int>(ref destinationTile, "destinationTile", 0, false);
+            Scribe_Values.Look<IntVec3>(ref destinationCell, "destinationCell", default(IntVec3), false);
+            Scribe_Values.Look<TravelingShipArrivalAction>(ref arrivalAction, "arrivalAction", TravelingShipArrivalAction.StayOnWorldMap, false);
+            Scribe_Values.Look<PawnsArrivalModeDef>(ref pawnArriveMode, "pawnArriveMode", PawnsArrivalModeDefOf.CenterDrop, false);
 
-            Scribe_Values.Look<bool>(ref this.leavingForTarget, "leavingForTarget", true, false);
-            Scribe_Values.Look<bool>(ref this.alreadyLeft, "alreadyLeft", false, false);
-            Scribe_Deep.Look<ShipBase>(ref this.containingShip, "containingShip", new object[0]);
+            Scribe_Values.Look<bool>(ref leavingForTarget, "leavingForTarget", true, false);
+            Scribe_Values.Look<bool>(ref alreadyLeft, "alreadyLeft", false, false);
+            Scribe_Deep.Look<ShipBase>(ref containingShip, "containingShip", new object[0]);
         }
     }
 }

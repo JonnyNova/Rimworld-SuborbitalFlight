@@ -59,7 +59,7 @@ namespace OHUShips
 
                                         if (ship.TryInstallTurret(comp))
                                         {
-                                            this.pawn.carryTracker.GetDirectlyHeldThings().Remove(TargetA.Thing);
+                                            pawn.carryTracker.GetDirectlyHeldThings().Remove(TargetA.Thing);
                                             ship.weaponsToInstall.Remove(comp.slotToInstall);
                                         }
                                         break; 
@@ -73,7 +73,7 @@ namespace OHUShips
                                         WeaponSystemShipBomb bomb = thing as WeaponSystemShipBomb;
                                         if (ship.TryInstallPayload(bomb, comp))
                                         {
-                                            this.pawn.carryTracker.GetDirectlyHeldThings().Remove(TargetA.Thing);
+                                            pawn.carryTracker.GetDirectlyHeldThings().Remove(TargetA.Thing);
                                             ship.weaponsToInstall.Remove(comp.slotToInstall);
                                         }
                                         break;

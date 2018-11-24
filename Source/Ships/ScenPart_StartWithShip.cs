@@ -19,42 +19,42 @@ namespace OHUShips
 
         public void AddToStartingCargo(Thing newCargo)
         {
-            this.startingCargo.Add(newCargo);
+            startingCargo.Add(newCargo);
         }
 
         public ScenPart_StartWithShip()
         {
-            this.shipDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(x => this.shipValidator(x));
+            shipDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(x => shipValidator(x));
         }
             
 
 
         public void AddToStartingCargo(IEnumerable<Thing> newCargo)
         {
-            this.startingCargo.AddRange(newCargo);
+            startingCargo.AddRange(newCargo);
         }
         public override IEnumerable<Thing> PlayerStartingThings()
         {
-            return this.startingCargo;
+            return startingCargo;
         }
 
         public override void Randomize()
         {
-            this.ShipDef = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(x => this.shipValidator(x)).RandomElement();
+            ShipDef = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(x => shipValidator(x)).RandomElement();
         }
 
         public override void GenerateIntoMap(Map map)
         {
             if (Find.TickManager.TicksGame < 1000)
             {
-                ShipBase newShip = (ShipBase)ThingMaker.MakeThing(this.ShipDef);
+                ShipBase newShip = (ShipBase)ThingMaker.MakeThing(ShipDef);
                 newShip.SetFaction(Faction.OfPlayer);
                 Thing initialFuel = ThingMaker.MakeThing(ShipNamespaceDefOfs.Chemfuel);
                 initialFuel.stackCount = 500;
                 newShip.refuelableComp.Refuel(new List<Thing>(new Thing[] { initialFuel }));
-                this.StartingShips.Add(newShip);
-                DropShipUtility.LoadNewCargoIntoRandomShips(this.PlayerStartingThings().ToList(), this.StartingShips);
-                DropShipUtility.DropShipGroups(map.Center, map, this.StartingShips, TravelingShipArrivalAction.EnterMapFriendly);
+                StartingShips.Add(newShip);
+                DropShipUtility.LoadNewCargoIntoRandomShips(PlayerStartingThings().ToList(), StartingShips);
+                DropShipUtility.DropShipGroups(map.Center, map, StartingShips, TravelingShipArrivalAction.EnterMapFriendly);
             }
         }
 
@@ -79,7 +79,7 @@ namespace OHUShips
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
             Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight);
-            if (Widgets.ButtonText(scenPartRect, this.ShipDef.label, true, false, true))
+            if (Widgets.ButtonText(scenPartRect, ShipDef.label, true, false, true))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();                
 
@@ -88,7 +88,7 @@ namespace OHUShips
                     ThingDef def = shipDefs[i];
                     list.Add(new FloatMenuOption(shipDefs[i].label, delegate
                     {
-                        this.ShipDef = def;
+                        ShipDef = def;
                     }, MenuOptionPriority.Default, null, null, 0f, null, null));
                 }                    
                 
@@ -100,7 +100,7 @@ namespace OHUShips
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Defs.Look<ThingDef>(ref this.ShipDef, "ShipDef");
+            Scribe_Defs.Look<ThingDef>(ref ShipDef, "ShipDef");
         }
 
 

@@ -55,18 +55,18 @@ namespace OHUShips
         {
             get
             {
-                return this.ship.Faction == Faction.OfPlayer;
+                return ship.Faction == Faction.OfPlayer;
             }
         }
 
         public ITab_ShipCargo()
         {
-            this.size = new Vector2(600f, 500f);
-            this.labelKey = "TabShipCargo";
+            size = new Vector2(600f, 500f);
+            labelKey = "TabShipCargo";
         }
         protected override void FillTab()
         {
-            Rect rect = new Rect(0f, 0f, this.size.x, this.size.y);
+            Rect rect = new Rect(0f, 0f, size.x, size.y);
             GUI.BeginGroup(rect);
             Rect rect2 = new Rect(rect.x, rect.y + 20f, rect.width, 30f);
             Text.Font = GameFont.Medium;
@@ -84,35 +84,35 @@ namespace OHUShips
 
             list.Add(new TabRecord("ShipPassengers".Translate(), delegate
             {
-                this.tab = ITab_ShipCargo.Tab.Passengers;
-            }, this.tab == ITab_ShipCargo.Tab.Passengers));
+                tab = ITab_ShipCargo.Tab.Passengers;
+            }, tab == ITab_ShipCargo.Tab.Passengers));
             
             list.Add(new TabRecord("ShipCargo".Translate(), delegate
             {
-                this.tab = ITab_ShipCargo.Tab.Cargo;
-            }, this.tab == ITab_ShipCargo.Tab.Cargo));
+                tab = ITab_ShipCargo.Tab.Cargo;
+            }, tab == ITab_ShipCargo.Tab.Cargo));
 
             list.Add(new TabRecord("ShipWeapons".Translate(), delegate
             {
-                this.tab = ITab_ShipCargo.Tab.Weapons;
-            }, this.tab == ITab_ShipCargo.Tab.Weapons));
+                tab = ITab_ShipCargo.Tab.Weapons;
+            }, tab == ITab_ShipCargo.Tab.Weapons));
             TabDrawer.DrawTabs(rect3, list);
             rect3 = rect3.ContractedBy(9f);
         //    GUI.BeginGroup(rect3);
 
             GUI.color = Color.white;
 
-            if (this.tab == Tab.Passengers)
+            if (tab == Tab.Passengers)
             {
                 DrawCargo(rect3, false);
             }
-            else if (this.tab == Tab.Cargo)
+            else if (tab == Tab.Cargo)
             {
                 DrawCargo(rect3, true);
             }
-            else if (this.tab == Tab.Weapons)
+            else if (tab == Tab.Weapons)
             {
-                this.DrawWeaponSlots(rect3);
+                DrawWeaponSlots(rect3);
             }
           
       //      GUI.EndGroup();
@@ -126,33 +126,33 @@ namespace OHUShips
             GUI.BeginGroup(rect);
             GUI.color = Color.white;
             Rect totalRect = new Rect(0f, 0f, rect.width-50f, 300f);
-            Rect viewRect = new Rect(0f, 0f, rect.width, this.scrollViewHeight);
-            Widgets.BeginScrollView(totalRect, ref this.scrollPosition, viewRect);
+            Rect viewRect = new Rect(0f, 0f, rect.width, scrollViewHeight);
+            Widgets.BeginScrollView(totalRect, ref scrollPosition, viewRect);
             float num = 0f;
-            if (this.ship.GetDirectlyHeldThings() != null)
+            if (ship.GetDirectlyHeldThings() != null)
             {
                 Text.Font = GameFont.Small;
-                for (int i = 0; i < this.ship.GetDirectlyHeldThings().Count; i++)
+                for (int i = 0; i < ship.GetDirectlyHeldThings().Count; i++)
                 {
-                    Thing thing = this.ship.GetDirectlyHeldThings()[i];
+                    Thing thing = ship.GetDirectlyHeldThings()[i];
                     Pawn pawn = thing as Pawn;
                     if (nonPawn)
                     {
                         if (pawn == null || (pawn != null && !pawn.def.race.Humanlike))
                         {
-                            this.DrawThingRow(ref num, viewRect.width-100f, thing);
+                            DrawThingRow(ref num, viewRect.width-100f, thing);
                         }
                     }
                     else
                     {
                         if (pawn != null && pawn.def.race.Humanlike)
                         {
-                            this.DrawThingRow(ref num, viewRect.width-100f, thing);
+                            DrawThingRow(ref num, viewRect.width-100f, thing);
                         }
                     }
                 }
             }
-            this.scrollViewHeight = num + 30f;            
+            scrollViewHeight = num + 30f;            
             Widgets.EndScrollView();
             GUI.EndGroup();
             GUI.color = Color.white;
@@ -201,8 +201,8 @@ namespace OHUShips
                 List<FloatMenuOption> opts = new List<FloatMenuOption>();
                 if (currentWeapon.Value == null)
                 {
-                    List<Thing> list = DropShipUtility.availableWeaponsForSlot(this.ship.Map, currentWeapon.Key);
-                    list.OrderBy(x => x.Position.DistanceToSquared(this.ship.Position));
+                    List<Thing> list = DropShipUtility.availableWeaponsForSlot(ship.Map, currentWeapon.Key);
+                    list.OrderBy(x => x.Position.DistanceToSquared(ship.Position));
                     for (int i = 0; i < list.Count; i++)
                     {
                         Thing weapon = list[i];
@@ -280,8 +280,8 @@ namespace OHUShips
                 List<FloatMenuOption> opts = new List<FloatMenuOption>();
                 if (currentWeapon.Value == null)
                 {
-                    List<Thing> list = DropShipUtility.availableWeaponsForSlot(this.ship.Map, currentWeapon.Key);
-                    list.OrderBy(x => x.Position.DistanceToSquared(this.ship.Position));
+                    List<Thing> list = DropShipUtility.availableWeaponsForSlot(ship.Map, currentWeapon.Key);
+                    list.OrderBy(x => x.Position.DistanceToSquared(ship.Position));
                     for (int i = 0; i < list.Count; i++)
                     {
                         Thing weapon = list[i];
@@ -332,14 +332,14 @@ namespace OHUShips
             Rect rect = new Rect(0f, y, width, 28f);
             Widgets.InfoCardButton(rect.width - 24f, y, thing);
             rect.width -= 24f;
-            if (this.CanControl)
+            if (CanControl)
             {
                 Rect rect2 = new Rect(rect.width - 24f, y, 24f, 24f);
                 TooltipHandler.TipRegion(rect2, "DropThing".Translate());
                 if (Widgets.ButtonImage(rect2, DropShipUtility.DropTexture))
                 {
                     Verse.Sound.SoundStarter.PlayOneShotOnCamera(SoundDefOf.Tick_High);
-                    this.InterfaceDrop(thing, this.ship);
+                    InterfaceDrop(thing, ship);
                 }
                 rect.width -= 24f;
             }

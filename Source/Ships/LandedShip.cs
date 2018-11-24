@@ -20,19 +20,19 @@ namespace OHUShips
 
         public LandedShip()
         {
-            this.ReloadStockIntoShip();
+            ReloadStockIntoShip();
         }
 
         public LandedShip(List<ShipBase> incomingShips)
         {
-            this.ships = incomingShips;
-            this.ReloadStockIntoShip();
+            ships = incomingShips;
+            ReloadStockIntoShip();
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look<ShipBase>(ref this.ships, "ships", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look<ShipBase>(ref ships, "ships", LookMode.Deep, new object[0]);
         }
 
         public Material cachedMat;
@@ -41,9 +41,9 @@ namespace OHUShips
         {
             get
             {
-                if (this.cachedMat == null)
+                if (cachedMat == null)
                 {
-                    this.cachedMat = MaterialPool.MatFrom(ships[0].def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, ships[0].DrawColor, WorldMaterials.WorldObjectRenderQueue);
+                    cachedMat = MaterialPool.MatFrom(ships[0].def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, ships[0].DrawColor, WorldMaterials.WorldObjectRenderQueue);
                 }
                 return cachedMat;
             }
@@ -54,14 +54,14 @@ namespace OHUShips
             base.Tick();
             if (Find.Targeter.IsTargeting)
             {
-                if (this.isTargeting)
+                if (isTargeting)
                 {
-                    GhostDrawer.DrawGhostThing(UI.MouseCell(), this.ships[0].Rotation, this.ships[0].def, null, new Color(0.5f, 1f, 0.6f, 0.4f), AltitudeLayer.Blueprint);
+                    GhostDrawer.DrawGhostThing(UI.MouseCell(), ships[0].Rotation, ships[0].def, null, new Color(0.5f, 1f, 0.6f, 0.4f), AltitudeLayer.Blueprint);
                 }
             }
             else
             {
-                this.isTargeting = false;
+                isTargeting = false;
             }
         }
 
@@ -69,7 +69,7 @@ namespace OHUShips
         {
             get
             {
-                if (this.ships.Count > 1)
+                if (ships.Count > 1)
                 {
                     return DropShipUtility.movingFleet;
                 }
@@ -83,7 +83,7 @@ namespace OHUShips
         //    {
         //        List<Thing> list = new List<Thing>();
         //        Log.Message("A");
-        //        list.AddRange(this.allLandedShipCargo);
+        //        list.AddRange(allLandedShipCargo);
         //        Log.Message("B");
         //        List<Thing> inventory = (CaravanInventoryUtility.AllInventoryItems(this));
         //        for (int i = 0; i < inventory.Count; i++)
@@ -94,7 +94,7 @@ namespace OHUShips
         //            }
         //        }
         //        Log.Message("D");
-        //        list.AddRange(this.PawnsListForReading.FindAll(x => !x.IsColonist).Cast<Thing>());
+        //        list.AddRange(PawnsListForReading.FindAll(x => !x.IsColonist).Cast<Thing>());
 
         //        Log.Message("E");
         //        return list;
@@ -105,9 +105,9 @@ namespace OHUShips
         {
             get
             {
-                for (int i = 0; i < this.ships.Count; i++)
+                for (int i = 0; i < ships.Count; i++)
                 {
-                    ThingOwner innerContainer = this.ships[i].GetDirectlyHeldThings();
+                    ThingOwner innerContainer = ships[i].GetDirectlyHeldThings();
                    
                     for (int j = 0; j < innerContainer.Count; j++)
                     {
@@ -130,10 +130,10 @@ namespace OHUShips
             get
             {
                 float num = 0;
-                List<ShipBase> ships = this.ships;
-                for (int i = 0; i < ships.Count; i++)
+                List<ShipBase> localShips = ships;
+                for (int i = 0; i < localShips.Count; i++)
                 {
-                    num += ships[i].compShip.sProps.maxCargo;
+                    num += localShips[i].compShip.sProps.maxCargo;
                 }
                 return num;
             }
@@ -142,19 +142,19 @@ namespace OHUShips
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            if (this.NightResting)
+            if (NightResting)
             {
                 stringBuilder.Append("CaravanResting".Translate());
             }
-            else if (this.AllOwnersDowned)
+            else if (AllOwnersDowned)
             {
                 stringBuilder.Append("AllCaravanMembersDowned".Translate());
             }
-            else if (this.pather.Moving)
+            else if (pather.Moving)
             {
-                if (this.pather.ArrivalAction != null)
+                if (pather.ArrivalAction != null)
                 {
-                    stringBuilder.Append(this.pather.ArrivalAction.ReportString);
+                    stringBuilder.Append(pather.ArrivalAction.ReportString);
                 }
                 else
                 {
@@ -179,7 +179,7 @@ namespace OHUShips
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            if (this.IsPlayerControlled)
+            if (IsPlayerControlled)
             {
                 Command_Action command_Action = new Command_Action();
                 command_Action.defaultLabel = "CommandLaunchShip".Translate();
@@ -188,7 +188,7 @@ namespace OHUShips
                 command_Action.action = delegate
                 {
                     SoundDef.Named("ShipTakeoff_SuborbitalLaunch").PlayOneShotOnCamera();
-                    this.ships[0].StartChoosingDestination(this.ships[0], false);
+                    ships[0].StartChoosingDestination(ships[0], false);
                 };
                 yield return command_Action;
 
@@ -207,7 +207,7 @@ namespace OHUShips
                 //    yield return CaravanJourneyDestinationUtility.TakeOffCommand(base.Tile);
                 //}
 
-                if (!this.ships.Any(x => x.ParkingMap == null))
+                if (!ships.Any(x => x.ParkingMap == null))
                 {
                     Command_Action command_Action4 = new Command_Action();
                     command_Action4.defaultLabel = "CommandTravelParkingPosition".Translate();
@@ -215,7 +215,7 @@ namespace OHUShips
                     command_Action4.icon = DropShipUtility.ReturnParkingFleet;
                     command_Action4.action = delegate
                     {
-                        foreach (ShipBase ship in this.ships)
+                        foreach (ShipBase ship in ships)
                         {
                             ship.TryLaunch(new GlobalTargetInfo(ship.ParkingPosition, ship.ParkingMap), PawnsArrivalModeDefOf.CenterDrop, TravelingShipArrivalAction.EnterMapFriendly, false);
                         }
@@ -227,24 +227,24 @@ namespace OHUShips
 
         public void UnloadCargoForTrading()
         {
-            for (int i = 0; i < this.ships.Count; i++)
+            for (int i = 0; i < ships.Count; i++)
             {
-                ThingOwner container = this.ships[i].GetDirectlyHeldThings();
+                ThingOwner container = ships[i].GetDirectlyHeldThings();
                 for (int k = 0; k < container.Count; k++)
                 {
-                    if (!this.Goods.Contains(container[k]))
+                    if (!Goods.Contains(container[k]))
                     {
                         Pawn pawn = container[k] as Pawn;
                         if (pawn != null)
                         {
                             if (!pawn.IsColonist)
                             {
-                                this.GetDirectlyHeldThings().TryAdd(pawn);
+                                GetDirectlyHeldThings().TryAdd(pawn);
                             }
                         }
                         else
                         {
-                            this.GetDirectlyHeldThings().TryAdd(container[k]);
+                            GetDirectlyHeldThings().TryAdd(container[k]);
                         }
                     }
                 }
@@ -255,32 +255,32 @@ namespace OHUShips
         
         public void ReloadStockIntoShip()
         {
-            List<Thing> allCargo = this.AllLandedShipCargo.ToList<Thing>();
-            allCargo.AddRange(this.PawnsListForReading.Cast<Thing>().ToList());
+            List<Thing> allCargo = AllLandedShipCargo.ToList<Thing>();
+            allCargo.AddRange(PawnsListForReading.Cast<Thing>().ToList());
             List<Thing> remainingCargo = new List<Thing>();
-            for (int i = 0; i < this.PawnsListForReading.Count; i++)
+            for (int i = 0; i < PawnsListForReading.Count; i++)
             {
-                this.tmpThingsToRemove.Clear();
-                ThingOwner carrier = this.PawnsListForReading[i].inventory.GetDirectlyHeldThings();
+                tmpThingsToRemove.Clear();
+                ThingOwner carrier = PawnsListForReading[i].inventory.GetDirectlyHeldThings();
                 if (carrier != null)
                 {
                     for (int k = 0; k < carrier.Count; k++)
                     {
                         if (allCargo.Contains(carrier[k]))
                         {
-                            this.tmpThingsToRemove.Add(carrier[k]);
+                            tmpThingsToRemove.Add(carrier[k]);
                         }
                         else
                         {
                             remainingCargo.Add(carrier[k]);
                         }
                     }
-                    carrier.RemoveAll(x => this.tmpThingsToRemove.Contains(x));
+                    carrier.RemoveAll(x => tmpThingsToRemove.Contains(x));
                 }
             }
 
             List<Thing> stockInShips = new List<Thing>();
-            foreach(ShipBase ship in this.ships)
+            foreach(ShipBase ship in ships)
             {
                 stockInShips.AddRange(ship.GetDirectlyHeldThings());
             }
@@ -292,7 +292,7 @@ namespace OHUShips
                     remainingCargo.Add(allCargo[i]);
                 }
             }
-            DropShipUtility.LoadNewCargoIntoRandomShips(remainingCargo, this.ships);
+            DropShipUtility.LoadNewCargoIntoRandomShips(remainingCargo, ships);
         }
     }       
     

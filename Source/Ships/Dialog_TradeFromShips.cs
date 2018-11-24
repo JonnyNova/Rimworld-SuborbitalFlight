@@ -21,7 +21,7 @@ namespace OHUShips
 
         public override void DoWindowContents(Rect inRect)
         {
-            this.RecacheTradeablblesAndMassCapacity();
+            RecacheTradeablblesAndMassCapacity();
             base.DoWindowContents(inRect);
         }
 
@@ -32,7 +32,7 @@ namespace OHUShips
 
         public override void PostClose()
         {
-            this.ResolveTradedItems();
+            ResolveTradedItems();
             base.PostClose();
         }
 
@@ -40,7 +40,7 @@ namespace OHUShips
         {
             get
             {
-                return VirtualPlantsUtility.EnvironmentAllowsEatingVirtualPlantsNowAt(this.landedShip.Tile);
+                return VirtualPlantsUtility.EnvironmentAllowsEatingVirtualPlantsNowAt(landedShip.Tile);
             }
         }
 
@@ -69,7 +69,7 @@ namespace OHUShips
 
         private void ResolveTradedItems()
         {
-            List<Thing> itemList = CaravanInventoryUtility.AllInventoryItems(this.landedShip);
+            List<Thing> itemList = CaravanInventoryUtility.AllInventoryItems(landedShip);
             List<Thing> tmpToRemove = new List<Thing>();
             if (itemList != null)
             {
@@ -98,16 +98,16 @@ namespace OHUShips
                     container.RemoveAll(x => tmpToRemove.Contains(x));
                 }
             }
-            this.LoadNewCargo();
+            LoadNewCargo();
         }
 
         private void LoadNewCargo()
         {
-            List<Pawn> pawns = this.landedShip.PawnsListForReading;
+            List<Pawn> pawns = landedShip.PawnsListForReading;
             for (int i=0; i < pawns.Count; i++)
             {
                 ThingOwner<Thing> innerContainer = pawns[i].inventory.innerContainer;
-                innerContainer.TryTransferAllToContainer(this.landedShip.ships.RandomElement().GetDirectlyHeldThings());
+                innerContainer.TryTransferAllToContainer(landedShip.ships.RandomElement().GetDirectlyHeldThings());
                 //for (int j = 0; j < inventory.Count; j++)
                 //{
                 //    Thing thing = inventory[j];

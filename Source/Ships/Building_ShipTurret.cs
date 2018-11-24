@@ -17,11 +17,11 @@ namespace OHUShips
         {
             get
             {
-                if (this.parentShipCached == null)
+                if (parentShipCached == null)
                 {
-                    this.parentShipCached = DropShipUtility.currentShipTracker.AllWorldShips.FirstOrDefault(x => x.GetUniqueLoadID() == this.parentShipLoadID);
+                    parentShipCached = DropShipUtility.currentShipTracker.AllWorldShips.FirstOrDefault(x => x.GetUniqueLoadID() == parentShipLoadID);
                 }
-                return this.parentShipCached;
+                return parentShipCached;
             }
         }
         
@@ -33,7 +33,7 @@ namespace OHUShips
 
         public void AssignParentShip(ShipBase ship)
         {
-            this.parentShipLoadID = ship.GetUniqueLoadID();
+            parentShipLoadID = ship.GetUniqueLoadID();
         }
 
         public void SwitchTurret(bool active)
@@ -54,16 +54,16 @@ namespace OHUShips
         {
             get
             {
-                if(this.parentShipCached != null)
+                if(parentShipCached != null)
                 {
-                    ShipWeaponSlot slot = parentShipCached.installedTurrets.First(x => x.Key.SlotName == this.assignedSlotName).Key;
+                    ShipWeaponSlot slot = parentShipCached.installedTurrets.First(x => x.Key.SlotName == assignedSlotName).Key;
                     if (slot != null)
                     {
                         return slot;
                     }
                     else
                     {
-                        Log.Error("No slot found for " + this.ToString() + " on " + parentShipCached.ToString());
+                        Log.Error("No slot found for " + ToString() + " on " + parentShipCached.ToString());
                         return null;
                     }
                 }
@@ -76,12 +76,12 @@ namespace OHUShips
         {
             get
             {
-                if (this.ParentShip != null)
+                if (ParentShip != null)
                 {
                     KeyValuePair<ShipWeaponSlot, Building_ShipTurret> turretEntry = ParentShip.installedTurrets.FirstOrDefault(x => x.Value == this);
                     if (turretEntry.Key != null)
                     {
-                        Vector3 vector = this.ParentShip.DrawPos + DropShipUtility.AdjustedIntVecForShip(this.ParentShip, turretEntry.Key.turretPosOffset).ToVector3();
+                        Vector3 vector = ParentShip.DrawPos + DropShipUtility.AdjustedIntVecForShip(ParentShip, turretEntry.Key.turretPosOffset).ToVector3();
                         vector.y = Altitudes.AltitudeFor(turretEntry.Key.altitudeLayer);
                         return vector;
                     }
@@ -93,15 +93,15 @@ namespace OHUShips
 
         public override void Draw()
         {
-            this.top.DrawTurret();
+            top.DrawTurret();
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<string>(ref this.assignedSlotName, "assignedSlotName");
-            Scribe_Values.Look<string>(ref this.parentShipLoadID, "parentShipLoadID");
-            Scribe_Defs.Look<ThingDef>(ref this.installedByWeaponSystem, "installedByWeaponSystem");
+            Scribe_Values.Look<string>(ref assignedSlotName, "assignedSlotName");
+            Scribe_Values.Look<string>(ref parentShipLoadID, "parentShipLoadID");
+            Scribe_Defs.Look<ThingDef>(ref installedByWeaponSystem, "installedByWeaponSystem");
         }
     }
 }

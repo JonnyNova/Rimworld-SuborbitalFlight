@@ -27,19 +27,19 @@ namespace OHUShips
 
         public WeaponSystem()
         {
-            this.stunner = new StunHandler(this);
+            stunner = new StunHandler(this);
         }
 
         public override void Tick()
         {
-            if (!this.Spawned)
+            if (!Spawned)
             {
                 base.Tick();
-                this.stunner.StunHandlerTick();
+                stunner.StunHandlerTick();
             }
-            if (this.isInstalled && this.Spawned)
+            if (isInstalled && Spawned)
             {
-                this.DeSpawn();
+                DeSpawn();
             }
         }
 
@@ -47,26 +47,26 @@ namespace OHUShips
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            this.isInstalled = false;
+            isInstalled = false;
 
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look<StunHandler>(ref this.stunner, "stunner", new object[]
+            Scribe_Deep.Look<StunHandler>(ref stunner, "stunner", new object[]
             {
                 this
             });
 
-            Scribe_Values.Look<bool>(ref this.isInstalled, "isInstalled", false, false);
-            Scribe_Values.Look<string>(ref this.assignedSlotName, "assignedSlotName");
-            Scribe_Values.Look<Vector3>(ref this.drawPosOffset, "drawPosOffset");
-            Scribe_Values.Look<WeaponSystemType>(ref this.weaponSystemType, "weaponSystemType");
-            Scribe_TargetInfo.Look(ref this.forcedTarget, "forcedTarget");
-            if (this.slotToInstall != null)
+            Scribe_Values.Look<bool>(ref isInstalled, "isInstalled", false, false);
+            Scribe_Values.Look<string>(ref assignedSlotName, "assignedSlotName");
+            Scribe_Values.Look<Vector3>(ref drawPosOffset, "drawPosOffset");
+            Scribe_Values.Look<WeaponSystemType>(ref weaponSystemType, "weaponSystemType");
+            Scribe_TargetInfo.Look(ref forcedTarget, "forcedTarget");
+            if (slotToInstall != null)
             {
-                Scribe_References.Look<ShipWeaponSlot>(ref this.slotToInstall, "slotToInstall");
+                Scribe_References.Look<ShipWeaponSlot>(ref slotToInstall, "slotToInstall");
             }
         }
 
@@ -77,7 +77,7 @@ namespace OHUShips
             {
                 return;
             }
-            this.stunner.Notify_DamageApplied(dinfo, true);
+            stunner.Notify_DamageApplied(dinfo, true);
             absorbed = false;
         }
         

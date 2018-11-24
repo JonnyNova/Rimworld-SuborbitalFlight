@@ -35,10 +35,10 @@ namespace OHUShips
         {
             get
             {
-                if (this.cachedMat == null)
+                if (cachedMat == null)
                 {
                     var first = ships.First();
-                    this.cachedMat = MaterialPool.MatFrom(first.def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, first.DrawColor, WorldMaterials.WorldObjectRenderQueue);
+                    cachedMat = MaterialPool.MatFrom(first.def.graphicData.texPath, ShaderDatabase.WorldOverlayCutout, first.DrawColor, WorldMaterials.WorldObjectRenderQueue);
                 }
                 return cachedMat;
             }
@@ -48,7 +48,7 @@ namespace OHUShips
         {
             get
             {
-                if (this.ships.Count > 1)
+                if (ships.Count > 1)
                 {
                     return DropShipUtility.movingFleet;
                 }
@@ -60,7 +60,7 @@ namespace OHUShips
         {
             get
             {
-                return Find.WorldGrid.GetTileCenter(this.initialTile);
+                return Find.WorldGrid.GetTileCenter(initialTile);
             }
         }
 
@@ -68,7 +68,7 @@ namespace OHUShips
         {
             get
             {
-                return Find.WorldGrid.GetTileCenter(this.destinationTile);
+                return Find.WorldGrid.GetTileCenter(destinationTile);
             }
         }
 
@@ -76,7 +76,7 @@ namespace OHUShips
         {
             get
             {
-                return Vector3.Slerp(this.Start, this.End, this.traveledPct);
+                return Vector3.Slerp(Start, End, traveledPct);
             }
         }
 
@@ -84,7 +84,7 @@ namespace OHUShips
         {
             get
             {
-                if (this.ships.Count == 1)
+                if (ships.Count == 1)
                 {
                     return true;
                 }
@@ -98,10 +98,10 @@ namespace OHUShips
         {
             get
             {
-                if (this.maxTravelingSpeed == -1)
+                if (maxTravelingSpeed == -1)
                 {
                     List<float> speedFactors = new List<float>();
-                    foreach (ShipBase ship in this.ships)
+                    foreach (ShipBase ship in ships)
                     {
                         speedFactors.Add(ship.compShip.sProps.WorldMapTravelSpeedFactor);
                     }
@@ -117,8 +117,8 @@ namespace OHUShips
         {
             get
             {
-                Vector3 start = this.Start;
-                Vector3 end = this.End;
+                Vector3 start = Start;
+                Vector3 end = End;
                 if (start == end)
                 {
                     return 1f;
@@ -176,7 +176,7 @@ namespace OHUShips
         {
             get
             {
-                List<Pawn> pawns = this.Pawns.ToList();
+                List<Pawn> pawns = Pawns.ToList();
                 for (int i=0; i < pawns.Count; i++)
                 {
                     if (pawns[i].IsColonist)
@@ -195,30 +195,30 @@ namespace OHUShips
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look<ShipBase>(ref this.ships, "ships", LookMode.Deep);
-            Scribe_Values.Look<int>(ref this.destinationTile, "destinationTile", 0, false);
-            Scribe_Values.Look<IntVec3>(ref this.destinationCell, "destinationCell", default(IntVec3), false);
-            Scribe_Values.Look<bool>(ref this.arrived, "arrived", false, false);
-            Scribe_Values.Look<int>(ref this.initialTile, "initialTile", 0, false);
-            Scribe_Values.Look<float>(ref this.traveledPct, "traveledPct", 0f, false);
-            Scribe_Values.Look<TravelingShipArrivalAction>(ref this.arrivalAction, "arrivalAction", TravelingShipArrivalAction.StayOnWorldMap, false);            
+            Scribe_Collections.Look<ShipBase>(ref ships, "ships", LookMode.Deep);
+            Scribe_Values.Look<int>(ref destinationTile, "destinationTile", 0, false);
+            Scribe_Values.Look<IntVec3>(ref destinationCell, "destinationCell", default(IntVec3), false);
+            Scribe_Values.Look<bool>(ref arrived, "arrived", false, false);
+            Scribe_Values.Look<int>(ref initialTile, "initialTile", 0, false);
+            Scribe_Values.Look<float>(ref traveledPct, "traveledPct", 0f, false);
+            Scribe_Values.Look<TravelingShipArrivalAction>(ref arrivalAction, "arrivalAction", TravelingShipArrivalAction.StayOnWorldMap, false);            
         }
 
         public override void PostAdd()
         {
             base.PostAdd();
-            this.initialTile = base.Tile;
+            initialTile = base.Tile;
         }
 
         public override void Tick()
         {
             base.Tick();
-            this.BurnFuel();
-            this.traveledPct += this.TraveledPctStepPerTick;
-            if (this.traveledPct >= 1f)
+            BurnFuel();
+            traveledPct += TraveledPctStepPerTick;
+            if (traveledPct >= 1f)
             {                
-                this.traveledPct = 1f;
-                this.Arrived();
+                traveledPct = 1f;
+                Arrived();
             }
         }
 
@@ -229,7 +229,7 @@ namespace OHUShips
 
         private void BurnFuel()
         {
-            foreach (ShipBase ship in this.ships)
+            foreach (ShipBase ship in ships)
             {
                 ship.refuelableComp.ConsumeFuel(ship.refuelableComp.Props.fuelConsumptionRate / 60f);
                 if (!ship.refuelableComp.HasFuel && !ship.Destroyed)
@@ -241,14 +241,14 @@ namespace OHUShips
             }
 
             // TODO why is this here?
-//            this.ships.RemoveAll(x => x.Destroyed);
+//            ships.RemoveAll(x => x.Destroyed);
         }
 
         public void AddShip(ShipBase ship, bool justLeftTheMap)
         {
-            if (!this.ships.Contains(ship))
+            if (!ships.Contains(ship))
             {
-                this.ships.Add(ship);
+                ships.Add(ship);
             }
         }
 
@@ -266,65 +266,65 @@ namespace OHUShips
 
         private void Arrived()
         {
-            if (this.arrived)
+            if (arrived)
             {
                 return;
             }
 
-            this.arrived = true;
-            if (TravelingShipsUtility.TryAddToLandedFleet(this, this.destinationTile))
+            arrived = true;
+            if (TravelingShipsUtility.TryAddToLandedFleet(this, destinationTile))
             {
                 return;
             }
-            if (this.arrivalAction == TravelingShipArrivalAction.BombingRun)
+            if (arrivalAction == TravelingShipArrivalAction.BombingRun)
             {
-                MapParent parent = Find.World.worldObjects.MapParentAt(this.destinationTile);
+                MapParent parent = Find.World.worldObjects.MapParentAt(destinationTile);
                 if (parent != null)
                 {
                     Messages.Message("MessageBombedSettlement".Translate(parent.ToString(), parent.Faction.Name), parent, MessageTypeDefOf.NeutralEvent);
                     Find.World.worldObjects.Remove(parent);
                 }
-                this.SwitchOriginToDest();
+                SwitchOriginToDest();
 
                 //TravelingShips travelingShips = (TravelingShips)WorldObjectMaker.MakeWorldObject(ShipNamespaceDefOfs.TravelingSuborbitalShip);
-                //travelingShips.ships.AddRange(this.ships);
-                //travelingShips.Tile = this.destinationTile;
+                //travelingShips.ships.AddRange(ships);
+                //travelingShips.Tile = destinationTile;
                 //travelingShips.SetFaction(Faction.OfPlayer);
-                //travelingShips.destinationTile = this.initialTile;
-                //travelingShips.destinationCell = this.launchCell;
-                //travelingShips.arriveMode = this.arriveMode;
+                //travelingShips.destinationTile = initialTile;
+                //travelingShips.destinationCell = launchCell;
+                //travelingShips.arriveMode = arriveMode;
                 //travelingShips.arrivalAction = TravelingShipArrivalAction.EnterMapFriendly;
                 //Find.WorldObjects.Add(travelingShips);
                 //Find.WorldObjects.Remove(this);
             }
             else
             {
-                Map map = Current.Game.FindMap(this.destinationTile);
+                Map map = Current.Game.FindMap(destinationTile);
                 if (map != null)
                 {
-                    this.SpawnShipsInMap(map, null);
+                    SpawnShipsInMap(map, null);
                 }
-                else if (!this.LandedShipHasCaravanOwner)
+                else if (!LandedShipHasCaravanOwner)
                 {
                     foreach (var ship in ships)
                     {
                         ship.GetDirectlyHeldThings().ClearAndDestroyContentsOrPassToWorld(DestroyMode.Vanish);
                     }
-                    this.RemoveAllPods();
+                    RemoveAllPods();
                     Find.WorldObjects.Remove(this);
-                    Messages.Message("MessageTransportPodsArrivedAndLost".Translate(), new GlobalTargetInfo(this.destinationTile), MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("MessageTransportPodsArrivedAndLost".Translate(), new GlobalTargetInfo(destinationTile), MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
                     var factionBase = Find.WorldObjects.Settlements.Find((x) => x.Tile == destinationTile);
-                    if (factionBase != null && factionBase.Faction != Faction.OfPlayer && this.arrivalAction != TravelingShipArrivalAction.StayOnWorldMap)
+                    if (factionBase != null && factionBase.Faction != Faction.OfPlayer && arrivalAction != TravelingShipArrivalAction.StayOnWorldMap)
                     {
                         LongEventHandler.QueueLongEvent(delegate
                         {
                             Map map2 = GetOrGenerateMapUtility.GetOrGenerateMap(factionBase.Tile, Find.World.info.initialMapSize, null); ;
                             
                             string extraMessagePart = null;
-                            if (this.arrivalAction == TravelingShipArrivalAction.EnterMapAssault && !factionBase.Faction.HostileTo(Faction.OfPlayer))
+                            if (arrivalAction == TravelingShipArrivalAction.EnterMapAssault && !factionBase.Faction.HostileTo(Faction.OfPlayer))
                             {
                                 factionBase.Faction.TrySetRelationKind(Faction.OfPlayer, FactionRelationKind.Hostile, true);
                                 extraMessagePart = "MessageTransportPodsArrived_BecameHostile".Translate(factionBase.Faction.Name).CapitalizeFirst();
@@ -332,12 +332,12 @@ namespace OHUShips
                             Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
                             Current.Game.CurrentMap = map2;
                             Find.CameraDriver.JumpToCurrentMapLoc(map2.Center);
-                            this.SpawnShipsInMap(map2, extraMessagePart);
+                            SpawnShipsInMap(map2, extraMessagePart);
                         }, "GeneratingMapForNewEncounter", false, null);
                     }
                     else
                     {
-                        this.SpawnCaravanAtDestinationTile();
+                        SpawnCaravanAtDestinationTile();
                     }
                 }
             }
@@ -361,13 +361,13 @@ namespace OHUShips
                 }
             }
             int startingTile;
-            if (!GenWorldClosest.TryFindClosestPassableTile(this.destinationTile, out startingTile))
+            if (!GenWorldClosest.TryFindClosestPassableTile(destinationTile, out startingTile))
             {
-                startingTile = this.destinationTile;
+                startingTile = destinationTile;
             }
             
-            LandedShip landedShip = TravelingShipsUtility.MakeLandedShip(this, this.Faction, startingTile, true);
-            this.RemoveAllPods();
+            LandedShip landedShip = TravelingShipsUtility.MakeLandedShip(this, Faction, startingTile, true);
+            RemoveAllPods();
             Find.WorldObjects.Remove(this);
             
             Messages.Message("MessageShipsArrived".Translate(), landedShip, MessageTypeDefOf.NeutralEvent);
@@ -383,11 +383,11 @@ namespace OHUShips
 
         private void SpawnShipsInMap(Map map, string extraMessagePart = null)
         {
-            this.RemoveAllPawnsFromWorldPawns();
+            RemoveAllPawnsFromWorldPawns();
             IntVec3 intVec;
-            if (this.destinationCell.IsValid && this.destinationCell.InBounds(map))
+            if (destinationCell.IsValid && destinationCell.InBounds(map))
             {
-                intVec = this.destinationCell;
+                intVec = destinationCell;
             }
             else if (arriveMode == PawnsArrivalModeDefOf.CenterDrop)
             {
@@ -397,7 +397,7 @@ namespace OHUShips
             {
                 if (arriveMode == PawnsArrivalModeDefOf.EdgeDrop)
                 {
-                    Log.Warning("Unsupported arrive mode " + this.arriveMode);
+                    Log.Warning("Unsupported arrive mode " + arriveMode);
                 }
                 Log.Message("Invalid Cell");
                 intVec = DropCellFinder.FindRaidDropCenterDistant(map);
@@ -408,9 +408,9 @@ namespace OHUShips
             {
                 text = text + " " + extraMessagePart;
             }
-            DropShipUtility.DropShipGroups(intVec, map, this.ships, this.arrivalAction, this.isSingularShip);
+            DropShipUtility.DropShipGroups(intVec, map, ships, arrivalAction, isSingularShip);
             Messages.Message(text, new TargetInfo(intVec, map, false), MessageTypeDefOf.NeutralEvent);
-            this.RemoveAllPods();
+            RemoveAllPods();
             Find.WorldObjects.Remove(this);
         }
 
@@ -426,7 +426,7 @@ namespace OHUShips
                         Pawn pawn = innerContainer[j] as Pawn;
                         if (pawn != null)
                         {
-                            if (CaravanUtility.IsOwner(pawn, this.Faction))
+                            if (CaravanUtility.IsOwner(pawn, Faction))
                             {
                                 return true;
                             }
@@ -455,22 +455,22 @@ namespace OHUShips
 
         private void RemoveAllPods()
         {
-            this.ships.Clear();
+            ships.Clear();
         }
 
         public void SwitchOriginToDest()
         {
-            this.traveledPct = 0f;
-            this.arrived = false;
-            this.arrivalAction = TravelingShipArrivalAction.EnterMapFriendly;
+            traveledPct = 0f;
+            arrived = false;
+            arrivalAction = TravelingShipArrivalAction.EnterMapFriendly;
 
-            int bufferTile = this.destinationTile;
+            int bufferTile = destinationTile;
 
-            this.destinationCell = this.launchCell;
-            this.destinationTile = this.initialTile;
+            destinationCell = launchCell;
+            destinationTile = initialTile;
 
-            this.initialTile = bufferTile;
-            this.launchCell = IntVec3.Zero;
+            initialTile = bufferTile;
+            launchCell = IntVec3.Zero;
         }
     }
 }

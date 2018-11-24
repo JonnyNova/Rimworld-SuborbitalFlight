@@ -30,7 +30,7 @@ namespace OHUShips
                     Need_Rest rest = lord.ownedPawns[i].needs.rest;
                     if (rest != null)
                     {
-                        if (rest.CurLevelPercentage < 0.14f + this.extraRestThreshOffset && !lord.ownedPawns[i].Awake())
+                        if (rest.CurLevelPercentage < 0.14f + extraRestThreshOffset && !lord.ownedPawns[i].Awake())
                         {
                             return true;
                         }

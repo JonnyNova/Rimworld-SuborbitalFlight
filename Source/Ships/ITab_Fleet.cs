@@ -26,7 +26,7 @@ namespace OHUShips
         {
             get
             {
-                return this.ship.Faction == Faction.OfPlayer;
+                return ship.Faction == Faction.OfPlayer;
             }
         }
 
@@ -40,21 +40,21 @@ namespace OHUShips
 
         public ITab_Fleet()
         {
-            this.size = new Vector2(600f, 500f);
-            this.labelKey = "TabFleetManagement";
+            size = new Vector2(600f, 500f);
+            labelKey = "TabFleetManagement";
         }
 
         public override bool IsVisible
         {
             get
             {
-                return this.CanControl;
+                return CanControl;
             }
         }
 
         protected override void FillTab()
         {
-            Rect rect = new Rect(0f, 0f, this.size.x, this.size.y);
+            Rect rect = new Rect(0f, 0f, size.x, size.y);
             GUI.BeginGroup(rect);
             Rect rect2 = new Rect(rect.x, rect.y + 20f, rect.width, 30f);
             Text.Font = GameFont.Medium;
@@ -78,20 +78,20 @@ namespace OHUShips
                 List<FloatMenuOption> opts = new List<FloatMenuOption>();
                 opts.Add(new FloatMenuOption("None", delegate
                 {
-                    this.ship.fleetID = -1;
+                    ship.fleetID = -1;
                 }));
-                foreach (KeyValuePair<int, string> currentFleet in this.shipTacker.PlayerFleetManager)
+                foreach (KeyValuePair<int, string> currentFleet in shipTacker.PlayerFleetManager)
                 {
                     FloatMenuOption option = new FloatMenuOption(currentFleet.Value, delegate
                     {
-                        this.ship.fleetID = currentFleet.Key;
+                        ship.fleetID = currentFleet.Key;
                     });
                     opts.Add(option);
                 }
 
                 Find.WindowStack.Add(new FloatMenu(opts));
             }
-            string curFleetString = "AssignedFleet".Translate() + (this.ship.fleetID != -1 && this.shipTacker.PlayerFleetManager.Count > 0 ?  this.shipTacker.PlayerFleetManager[this.ship.fleetID] : "None".Translate());
+            string curFleetString = "AssignedFleet".Translate() + (ship.fleetID != -1 && shipTacker.PlayerFleetManager.Count > 0 ?  shipTacker.PlayerFleetManager[ship.fleetID] : "None".Translate());
             Widgets.Label(assignedFleetRect, curFleetString);
 
             Rect fleetRect = new Rect(newFleetRect.x, newFleetRect.yMax + 20f, rect.width, 500f);
@@ -99,9 +99,9 @@ namespace OHUShips
             Rect viewRect = new Rect(0f, 0f, rect.width - 16f, ITab_Fleet.billsScrollHeight);
             Widgets.BeginScrollView(fleetRect, ref ITab_Fleet.ScrollPosition, viewRect);
             float num = 0;
-            foreach(KeyValuePair<int, string> fleetEntry in this.shipTacker.PlayerFleetManager)
+            foreach(KeyValuePair<int, string> fleetEntry in shipTacker.PlayerFleetManager)
             {
-                this.DrawFleetEntry(ref num, viewRect.width, fleetEntry);
+                DrawFleetEntry(ref num, viewRect.width, fleetEntry);
             }
             Widgets.EndScrollView();
             GUI.EndGroup();
@@ -120,21 +120,21 @@ namespace OHUShips
             }
 
             float curX = width/2;
-            List<ShipBase> fleetShips = this.shipTacker.ShipsInFleet(currentFleet.Key);
+            List<ShipBase> fleetShips = shipTacker.ShipsInFleet(currentFleet.Key);
             if (!fleetShips.NullOrEmpty())
             {
                 foreach (ShipBase ship in fleetShips)
                 {
-                    this.DrawFleetMember(ref curX, curY, ship);
+                    DrawFleetMember(ref curX, curY, ship);
                 }
             }
             if (Widgets.ButtonImage(deleteRect, DropShipUtility.CancelTex))
             {
-                foreach (ShipBase ship in this.shipTacker.ShipsInFleet(currentFleet.Key))
+                foreach (ShipBase ship in shipTacker.ShipsInFleet(currentFleet.Key))
                 {
                     ship.fleetID = -1;
                 }
-                this.shipTacker.DeleteFleetEntry(currentFleet.Key);
+                shipTacker.DeleteFleetEntry(currentFleet.Key);
             }
 
             curY += 35f;
@@ -159,11 +159,11 @@ namespace OHUShips
 
             public Dialog_RenameShip(int ID)
             {
-                this.num = ID;
-                this.curName = DropShipUtility.currentShipTracker.PlayerFleetManager[num];
-                this.nameMessageKey = "NameFleetMessage";
-                this.gainedNameMessageKey = "RenamedFleetMessage";
-                this.invalidNameMessageKey = "FleetNameIsInvalid";
+                num = ID;
+                curName = DropShipUtility.currentShipTracker.PlayerFleetManager[num];
+                nameMessageKey = "NameFleetMessage";
+                gainedNameMessageKey = "RenamedFleetMessage";
+                invalidNameMessageKey = "FleetNameIsInvalid";
             }
 
             protected override bool IsValidName(string s)

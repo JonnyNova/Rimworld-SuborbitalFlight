@@ -18,11 +18,11 @@ namespace OHUShips
         {
             get
             {
-                if (this.loadID == -1)
+                if (loadID == -1)
                 {
-                    this.loadID = DropShipUtility.currentShipTracker.GetNextWeaponSlotID();
+                    loadID = DropShipUtility.currentShipTracker.GetNextWeaponSlotID();
                 }
-                return this.loadID;
+                return loadID;
             }                
         }
 
@@ -34,17 +34,17 @@ namespace OHUShips
                
         public string GetUniqueLoadID()
         {
-            return "ShipWeaponSlot_" + this.LoadID;
+            return "ShipWeaponSlot_" + LoadID;
         }
 
         public virtual void ExposeData()
         {
-            Scribe_Values.Look<string>(ref this.SlotName, "SlotName", "");
-            Scribe_Values.Look<WeaponSystemType>(ref this.slotType, "slotType", WeaponSystemType.LightCaliber);
-            Scribe_Values.Look<IntVec2>(ref this.turretMinSize, "turretMinSize", IntVec2.One);
-            Scribe_Values.Look<IntVec3>(ref this.turretPosOffset, "posOffset", IntVec3.Zero);
-            Scribe_Values.Look<int>(ref this.loadID, "loadID");
-            Scribe_Values.Look<WeaponSystemType>(ref this.slotType, "slotType");
+            Scribe_Values.Look<string>(ref SlotName, "SlotName", "");
+            Scribe_Values.Look<WeaponSystemType>(ref slotType, "slotType", WeaponSystemType.LightCaliber);
+            Scribe_Values.Look<IntVec2>(ref turretMinSize, "turretMinSize", IntVec2.One);
+            Scribe_Values.Look<IntVec3>(ref turretPosOffset, "posOffset", IntVec3.Zero);
+            Scribe_Values.Look<int>(ref loadID, "loadID");
+            Scribe_Values.Look<WeaponSystemType>(ref slotType, "slotType");
         }
     }
 }

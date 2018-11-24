@@ -14,14 +14,14 @@ namespace OHUShips
         {
             get
             {
-                return (CompProperties_ShipWeapon)this.props;
+                return (CompProperties_ShipWeapon)props;
             }
         }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.Look<ShipWeaponSlot>(ref this.slotToInstall, "slotToInstall");
+            Scribe_References.Look<ShipWeaponSlot>(ref slotToInstall, "slotToInstall");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace OHUShips
 
         public CompProperties_ShipWeapon()
         {
-            this.compClass = typeof(CompShipWeapon);
+            compClass = typeof(CompShipWeapon);
         }
         
         public List<ThingDef> availableToShips = new List<ThingDef>();

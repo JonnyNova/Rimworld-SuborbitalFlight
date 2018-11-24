@@ -27,7 +27,7 @@ namespace OHUShips
 
                 graph.AddToil(lordToil);
                 Transition transition = new Transition(leaveTransitions[i].target, new LordToil_ExitMapAndEscortCarriers());
-                transition.AddTrigger(new Trigger_Custom((TriggerSignal x) => this.ships.All(z => z.Destroyed) || !this.ships.Any(y => y.Map == this.Map && y.Spawned)));
+                transition.AddTrigger(new Trigger_Custom((TriggerSignal x) => ships.All(z => z.Destroyed) || !ships.Any(y => y.Map == Map && y.Spawned)));
                 graph.transitions.Add(transition);
             }
 

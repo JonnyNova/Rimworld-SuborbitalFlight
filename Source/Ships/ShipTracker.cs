@@ -77,33 +77,33 @@ namespace OHUShips
 
         public void RemoveShip(ShipBase ship)
         {
-            this.AllWorldShips.Remove(ship);
-            this.AllWorldShips.RemoveAll(x => x == null);
+            AllWorldShips.Remove(ship);
+            AllWorldShips.RemoveAll(x => x == null);
         }
 
         public List<ShipBase> PlayerShips
         {
             get
             {
-                return this.AllWorldShips.FindAll(x => x.Faction == Faction.OfPlayer);
+                return AllWorldShips.FindAll(x => x.Faction == Faction.OfPlayer);
             }
         }
         public void AddNewFleetEntry()
         {
-            this.PlayerFleetManager.Add(this.GetNextFleetId(), "TabFleetManagement".Translate() + " " + this.nextFleetID);
+            PlayerFleetManager.Add(GetNextFleetId(), "TabFleetManagement".Translate() + " " + nextFleetID);
         }
         public void AddNewFleetEntry(string newName)
         {
-            this.PlayerFleetManager.Add(this.GetNextFleetId(), newName);
+            PlayerFleetManager.Add(GetNextFleetId(), newName);
         }
         public void DeleteFleetEntry(int ID)
         {
-            this.PlayerFleetManager.Remove(ID);
+            PlayerFleetManager.Remove(ID);
         }
         
         public int GetNextFleetId()
         {
-            return this.GetNextID(ref this.nextFleetID);
+            return GetNextID(ref nextFleetID);
         }
 
         private int GetNextID(ref int nextID)
@@ -124,19 +124,19 @@ namespace OHUShips
 
         public int GetNextWeaponSlotID()
         {
-            return this.GetNextID(ref this.nextWeaponSlotID);
+            return GetNextID(ref nextWeaponSlotID);
         }
 
         public List<ShipBase> ShipsInFleet(int ID)
         {
-            return this.AllWorldShips.FindAll(x => x.fleetID == ID);
+            return AllWorldShips.FindAll(x => x.fleetID == ID);
         }
 
         public bool PawnIsTravelingInShip(Pawn pawn)
         {
-            for(int i = 0; i < this.AllTravelingShips.Count; i++)
+            for(int i = 0; i < AllTravelingShips.Count; i++)
             {
-                TravelingShips cur = this.AllTravelingShips[i];
+                TravelingShips cur = AllTravelingShips[i];
                 if (cur.ContainsPawn(pawn))
                 {
                     return true;
@@ -149,10 +149,10 @@ namespace OHUShips
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<int>(ref this.nextFleetID, "nextFleetID");
-            Scribe_Values.Look<int>(ref this.nextWeaponSlotID, "nextWeaponSlotID");
-            Scribe_Collections.Look<int, string>(ref this.PlayerFleetManager, "PlayerFleetManager", LookMode.Value, LookMode.Value);
-            Scribe_Collections.Look<ShipBase>(ref this.AllWorldShips, "AllWorldShips", LookMode.Reference, new object[0]);            
+            Scribe_Values.Look<int>(ref nextFleetID, "nextFleetID");
+            Scribe_Values.Look<int>(ref nextWeaponSlotID, "nextWeaponSlotID");
+            Scribe_Collections.Look<int, string>(ref PlayerFleetManager, "PlayerFleetManager", LookMode.Value, LookMode.Value);
+            Scribe_Collections.Look<ShipBase>(ref AllWorldShips, "AllWorldShips", LookMode.Reference, new object[0]);            
         }
 
         
