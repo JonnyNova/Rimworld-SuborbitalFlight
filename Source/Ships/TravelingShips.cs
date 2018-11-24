@@ -345,21 +345,6 @@ namespace OHUShips
 
         private void SpawnCaravanAtDestinationTile()
         {
-            TravelingShipsUtility.tmpPawns.Clear();
-            foreach (var ship in ships)
-            {
-                ThingOwner innerContainer = ship.GetDirectlyHeldThings();
-            //    Log.Message("SpawningCaravan");
-            //    TravelingShipsUtility.MakepawnInfos(innerContainer);
-                for (int j = 0; j < innerContainer.Count; j++)
-                {
-                    Pawn pawn = innerContainer[j] as Pawn;
-                    if (pawn != null)
-                    {
-                        TravelingShipsUtility.tmpPawns.Add(pawn);
-                    }
-                }
-            }
             int startingTile;
             if (!GenWorldClosest.TryFindClosestPassableTile(destinationTile, out startingTile))
             {

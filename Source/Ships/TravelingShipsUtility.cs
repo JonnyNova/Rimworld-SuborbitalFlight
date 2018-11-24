@@ -11,9 +11,6 @@ namespace OHUShips
 {
     public static class TravelingShipsUtility
     {
-
-        public static List<Pawn> tmpPawns = new List<Pawn>();
-
         public static void DistributePawnsOnShips(LandedShip landedObject)
         {
             List<ShipBase> ships = landedObject.ships;
@@ -261,8 +258,6 @@ namespace OHUShips
             {
                 Log.Warning("Tried to create a caravan but chose not to spawn a caravan but pass pawns to world. This can cause bugs because pawns can be discarded.");
             }
-            TravelingShipsUtility.tmpPawns.Clear();
-            TravelingShipsUtility.tmpPawns.AddRange(incomingShips.Pawns);
 
             LandedShip caravan = (LandedShip)WorldObjectMaker.MakeWorldObject(ShipNamespaceDefOfs.LandedShip);
             if (startingTile >= 0)
