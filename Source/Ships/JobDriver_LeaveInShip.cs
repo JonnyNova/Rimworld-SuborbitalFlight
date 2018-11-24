@@ -55,7 +55,7 @@ namespace OHUShips
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
