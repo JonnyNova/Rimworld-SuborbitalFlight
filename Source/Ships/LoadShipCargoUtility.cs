@@ -13,8 +13,6 @@ namespace OHUShips
 {
     public class LoadShipCargoUtility
     {
-        private static HashSet<Thing> neededThings = new HashSet<Thing>();
-
         public static Job JobLoadShipCargo(Pawn p, ShipBase ship)
         {
             if (p.jobs.jobQueue.Any(x => x.job.def == ShipNamespaceDefOfs.LoadContainerMultiplePawns))
@@ -50,7 +48,7 @@ namespace OHUShips
 
         private static Thing FindThingToLoad(Pawn p, ShipBase ship)
         {
-            LoadShipCargoUtility.neededThings.Clear();
+            var neededThings = new HashSet<Thing>();
             foreach (var transferableOneWay in ship.compShip.LeftToLoad)
             {
                 if (transferableOneWay.CountToTransfer > 0)
@@ -61,17 +59,17 @@ namespace OHUShips
                     }
                 }
             }
-            if (!LoadShipCargoUtility.neededThings.Any<Thing>())
+            if (!neededThings.Any())
             {
                 return null;
             }
             //Predicate<Thing> validator = (Thing x) => LoadShipCargoUtility.neededThings.Contains(x) && p.CanReserve(x, 1) && !p.Map.reservationManager.IsReservedByAnyoneOf(x, p.Faction);
             //Thing thing = GenClosest.ClosestThingReachable(p.Position, p.Map, ThingRequest.ForGroup(ThingRequestGroup.HaulableEver), PathEndMode.Touch, TraverseParms.For(p, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null);
-            Thing thing = GenClosest.ClosestThingReachable(p.Position, p.Map, ThingRequest.ForGroup(ThingRequestGroup.HaulableEver), PathEndMode.Touch, TraverseParms.For(p, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, (Thing x) => LoadShipCargoUtility.neededThings.Contains(x) && p.CanReserve(x, 1, -1, null, false), null, 0, -1, false, RegionType.Set_Passable, false);
+            Thing thing = GenClosest.ClosestThingReachable(p.Position, p.Map, ThingRequest.ForGroup(ThingRequestGroup.HaulableEver), PathEndMode.Touch, TraverseParms.For(p, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, (Thing x) => neededThings.Contains(x) && p.CanReserve(x, 1, -1, null, false), null, 0, -1, false, RegionType.Set_Passable, false);
 
             if (thing == null)
             {
-                foreach (Thing current in LoadShipCargoUtility.neededThings)
+                foreach (Thing current in neededThings)
                 {
                     Pawn pawn = current as Pawn;
                     if (pawn != null && (!pawn.IsColonist || pawn.Downed) && p.CanReserveAndReach(pawn, PathEndMode.Touch, Danger.Deadly, 10))
@@ -81,7 +79,6 @@ namespace OHUShips
                 }
                 return null;
             }
-            LoadShipCargoUtility.neededThings.Clear();
             //Log.Message("Returning Thing: " + thing.ToString());
             return thing;
         }
