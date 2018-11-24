@@ -405,10 +405,6 @@ namespace OHUShips
 
         private bool AssignTransferablesToShip()
         {
-            this.ship.compShip.leftToLoad = new List<TransferableOneWay>();
-            this.ship.compShip.leftToLoad.Clear();
-
-       //     this.RemoveExistingTransferables();
             for (int i = 0; i < this.transferables.Count; i++)
             {
                 Dialog_LoadShipCargo.RemoveExistingTransferable(this.transferables[i], null, this.ship);

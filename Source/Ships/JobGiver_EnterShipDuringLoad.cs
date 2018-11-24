@@ -25,26 +25,9 @@ namespace OHUShips
             if (p.mindState.duty != null && p.mindState.duty.focus != null)
             {
                 ShipBase ship = (ShipBase)p.mindState.duty.focus;
-                if (ship != null)
+                if (ship != null && ship.compShip.LoadingOnlyPawnsRemain())
                 {
-                    List<TransferableOneWay> leftToLoad = ship.compShip.leftToLoad;
-                    if (leftToLoad != null)
-                    {
-                        for (int j = 0; j < leftToLoad.Count; j++)
-                        {
-                            if (leftToLoad[j].AnyThing is Pawn)
-                            {
-                                List<Thing> things = leftToLoad[j].things;
-                                for (int k = 0; k < things.Count; k++)
-                                {
-                                    if (things[k] == p)
-                                    {
-                                        return ship;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    return ship;
                 }
             }
             return null;

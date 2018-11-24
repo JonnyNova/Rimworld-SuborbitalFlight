@@ -24,7 +24,7 @@ namespace OHUShips
             }
                 Thing thing = LoadShipCargoUtility.FindThingToLoad(p, ship);
                 // TODO desperate?
-                TransferableOneWay transferable = TransferableUtility.TransferableMatchingDesperate(thing, ship.compShip.leftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
+                TransferableOneWay transferable = TransferableUtility.TransferableMatchingDesperate(thing, ship.compShip.LeftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
                 if (thing != null && transferable != null)
                 {
                     int thingCount = transferable.CountToTransfer;
@@ -51,18 +51,13 @@ namespace OHUShips
         private static Thing FindThingToLoad(Pawn p, ShipBase ship)
         {
             LoadShipCargoUtility.neededThings.Clear();
-            List<TransferableOneWay> leftToLoad = ship.compShip.leftToLoad;
-            if (leftToLoad != null)
+            foreach (var transferableOneWay in ship.compShip.LeftToLoad)
             {
-                for (int i = 0; i < leftToLoad.Count; i++)
+                if (transferableOneWay.CountToTransfer > 0)
                 {
-                    TransferableOneWay transferableOneWay = leftToLoad[i];
-                    if (transferableOneWay.CountToTransfer > 0)
+                    for (int j = 0; j < transferableOneWay.things.Count; j++)
                     {
-                        for (int j = 0; j < transferableOneWay.things.Count; j++)
-                        {
-                            LoadShipCargoUtility.neededThings.Add(transferableOneWay.things[j]);
-                        }
+                        neededThings.Add(transferableOneWay.things[j]);
                     }
                 }
             }

@@ -12,7 +12,7 @@ namespace OHUShips
 {
     public class CompShip : ThingComp
     {
-        public List<TransferableOneWay> leftToLoad;
+        private readonly List<TransferableOneWay> leftToLoad = new List<TransferableOneWay>();
         
         public bool cargoLoadingActive;
         
@@ -73,6 +73,16 @@ namespace OHUShips
             }
         }
 
+        public List<TransferableOneWay> LeftToLoad => leftToLoad;
+
+        public bool LoadingOnlyPawnsRemain()
+        {
+            return leftToLoad
+                       .Where(transferable => transferable.HasAnyThing)
+                       .Select(transferable => transferable.AnyThing)
+                       .Where(thing => thing != null)
+                       .FirstOrDefault(thing => thing.GetType() == typeof(Pawn)) == null;
+        }
 
         public bool CancelLoadCargo(Map map)
         {
@@ -90,10 +100,6 @@ namespace OHUShips
             {
                 //Log.Message("NoThingsToTransfer");
                 return;
-            }
-            if (this.leftToLoad == null)
-            {
-                this.leftToLoad = new List<TransferableOneWay>();
             }
             if (TransferableUtility.TransferableMatching<TransferableOneWay>(t.AnyThing, this.leftToLoad, TransferAsOneMode.Normal) != null)
             {
@@ -150,7 +156,6 @@ namespace OHUShips
                 this.cargoLoadingActive = false;
                 this.TryRemoveLord(this.parent.Map);
                 this.leftToLoad.Clear();
-                this.leftToLoad = new List<TransferableOneWay>();
               
                 Messages.Message("MessageFinishedLoadingShipCargo".Translate(ship.ShipNick), parent, MessageTypeDefOf.TaskCompletion);
             }

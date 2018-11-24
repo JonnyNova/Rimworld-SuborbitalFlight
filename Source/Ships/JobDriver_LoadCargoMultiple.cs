@@ -24,7 +24,7 @@ namespace OHUShips
             get
             {
                 // TODO should this be desperate?
-                return TransferableUtility.TransferableMatchingDesperate(this.TargetA.Thing, ship.compShip.leftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
+                return TransferableUtility.TransferableMatchingDesperate(TargetA.Thing, ship.compShip.LeftToLoad, TransferAsOneMode.PodsOrCaravanPacking);
             }
         }
 
