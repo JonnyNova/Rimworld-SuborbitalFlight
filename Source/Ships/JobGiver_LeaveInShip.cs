@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Verse;
+﻿using Verse;
 using Verse.AI;
 
 namespace OHUShips
@@ -11,19 +7,14 @@ namespace OHUShips
     {       
         protected override Job TryGiveJob(Pawn pawn)
         {
-            List<Thing> ships = DropShipUtility.CurrentFactionShips(pawn).FindAll(x => x.Map == pawn.Map);
-            if (!ships.NullOrEmpty())
+            foreach (var ship in DropShipUtility.CurrentFactionShips(pawn).InRandomOrder())
             {
-                Thing ship = ships.RandomElement();
-                if (ship != null && ship.Map.reservationManager.CanReserve(pawn, ship, ship.TryGetComp<CompShip>().sProps.maxPassengers))
+                if (ship.Map.reservationManager.CanReserve(pawn, ship, ship.TryGetComp<CompShip>().sProps.maxPassengers))
                 {
-                    Job job = new Job(ShipNamespaceDefOfs.LeaveInShip, pawn, ship);
-
-                    return job;
+                    return new Job(ShipNamespaceDefOfs.LeaveInShip, pawn, ship);
                 }
             }
             return null;
         }
-
     }
 }
