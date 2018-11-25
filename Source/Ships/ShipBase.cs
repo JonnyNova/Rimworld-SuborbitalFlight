@@ -906,7 +906,7 @@ namespace OHUShips
                 for (int i=0; i< DropShipUtility.currentShipTracker.ShipsInFleet(fleetID).Count; i++)
                 {
                     ShipBase ship = DropShipUtility.currentShipTracker.ShipsInFleet(fleetID)[i];
-                    if (ship.compShip.cargoLoadingActive)
+                    if (ship.compShip.CargoLoadingActive)
                     {
                         Messages.Message("MessageFleetLaunchImpossible".Translate(), MessageTypeDefOf.RejectInput);
                         return false;

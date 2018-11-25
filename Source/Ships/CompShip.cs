@@ -13,8 +13,8 @@ namespace OHUShips
     public class CompShip : ThingComp
     {
         private readonly List<TransferableOneWay> leftToLoad = new List<TransferableOneWay>();
-        
-        public bool cargoLoadingActive;
+
+        public bool CargoLoadingActive => !leftToLoad.NullOrEmpty();
         
         public ShipBase ship
         {
@@ -86,10 +86,11 @@ namespace OHUShips
 
         public bool CancelLoadCargo(Map map)
         {
-            if (!cargoLoadingActive)
+            if (!CargoLoadingActive)
             {
                 return false;
             }
+            leftToLoad.Clear();
             TryRemoveLord(map);
             return true;
         }
@@ -153,7 +154,6 @@ namespace OHUShips
 
             if (!AnythingLeftToLoad)
             {
-                cargoLoadingActive = false;
                 TryRemoveLord(parent.Map);
                 leftToLoad.Clear();
               

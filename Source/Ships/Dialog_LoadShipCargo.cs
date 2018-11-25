@@ -373,7 +373,6 @@ namespace OHUShips
                 }
             }
             Lord newLord = LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_LoadShipCargo(ship), map, pawns);
-            ship.compShip.cargoLoadingActive = true;
             Messages.Message("MessageShipCargoLoadStarted".Translate(ship.ShipNick), ship, MessageTypeDefOf.NeutralEvent);
             return true;
         }

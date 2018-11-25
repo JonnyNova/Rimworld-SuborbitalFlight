@@ -23,7 +23,7 @@ namespace OHUShips
             return map.listerBuildings.allBuildingsColonist
                 .Where(building => building.GetType() == typeof(ShipBase))
                 .Cast<ShipBase>()
-                .Where(ship => ship.GetComp<CompShip>().cargoLoadingActive);
+                .Where(ship => ship.GetComp<CompShip>().CargoLoadingActive);
         }
     }
 }
