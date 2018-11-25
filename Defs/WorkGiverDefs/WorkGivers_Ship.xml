@@ -44,6 +44,17 @@
     </requiredCapacities>
   </WorkGiverDef>
 
-
+  <WorkGiverDef>
+    <defName>HelpLoadShip</defName>
+    <label>load ship</label>
+    <giverClass>OHUShips.WorkGiver_HelpLoadShip</giverClass>
+    <workType>Hauling</workType>
+    <verb>load</verb>
+    <gerund>loading</gerund>
+    <priorityInType>105</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
 
 </Defs>

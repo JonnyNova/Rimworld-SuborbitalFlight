@@ -22,9 +22,6 @@ namespace OHUShips
 
         private const float BottomAreaHeight = 55f;
 
-        private int numOfHaulers;
-        private string numOfHaulersString;
-
         private Map map;
 
         private ShipBase ship;
@@ -281,8 +278,6 @@ namespace OHUShips
         {
             Rect rect0 = new Rect(0f, rect.height - 55f, 300f, 30f);
             
-            Widgets.TextFieldNumericLabeled(rect0, "NumberOfHaulers".Translate(), ref numOfHaulers, ref numOfHaulersString, 0, map.mapPawns.FreeColonistsSpawned.ToList().FindAll(x => x.GetLord() == null).Count);
-
             Rect rect2 = new Rect(rect.width / 2f - BottomButtonSize.x / 2f, rect.height - 55f, BottomButtonSize.x, BottomButtonSize.y);
             if (Widgets.ButtonText(rect2, "AcceptButton".Translate(), true, false, true) && TryAccept())
             {
@@ -366,31 +361,18 @@ namespace OHUShips
             {
                 return false;
             }
-            IEnumerable<Pawn> enumerable = from x in pawnsFromTransferables
-                                           where x.IsColonist && !x.Downed
-                                           select x;
-            List<Pawn> list = enumerable.ToList();
-            while(list.Count(x => x.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)) < numOfHaulers)
-            {
-                Pawn pawn = map.mapPawns.FreeColonistsSpawned.RandomElement();
 
-                if (pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && !list.Contains(pawn) && pawn.GetLord() == null)
+            var pawns = (from x in pawnsFromTransferables
+                where x.IsColonist && !x.Downed
+                select x).ToList();
+            foreach (Pawn current in pawns)
+            {
+                if (current.Spawned)
                 {
-                    list.Add(pawn);
+                    current.jobs.EndCurrentJob(JobCondition.InterruptForced, true);
                 }
             }
-
-            if (list.Any<Pawn>())
-            {
-                foreach (Pawn current in enumerable)
-                {
-                    if (current.Spawned)
-                    {
-                        current.jobs.EndCurrentJob(JobCondition.InterruptForced, true);
-                    }
-                }
-               Lord newLord = LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_LoadShipCargo(ship), map, list);
-            }
+            Lord newLord = LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_LoadShipCargo(ship), map, pawns);
             ship.compShip.cargoLoadingActive = true;
             Messages.Message("MessageShipCargoLoadStarted".Translate(ship.ShipNick), ship, MessageTypeDefOf.NeutralEvent);
             return true;
@@ -415,11 +397,6 @@ namespace OHUShips
             if (!transferables.Any((TransferableOneWay x) => x.CountToTransfer != 0))
             {
                 Messages.Message("CantSendEmptyTransportPods".Translate(), MessageTypeDefOf.RejectInput);
-                return false;
-            }
-            if (numOfHaulers <= 0 && pawns.Count <= 0)
-            {
-                Messages.Message("CantAssignZeroHaulers".Translate(), MessageTypeDefOf.RejectInput);
                 return false;
             }
             if (MassUsage > MassCapacity)

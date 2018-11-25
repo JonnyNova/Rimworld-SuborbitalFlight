@@ -110,6 +110,7 @@
     <Compile Include="Ships\WeaponSystemType.cs" />
     <Compile Include="Ships\WITab_LandedShip_Cargo.cs" />
     <Compile Include="Ships\WorkGiver_InstallShipWeapon.cs" />
+    <Compile Include="Ships\WorkGiver_HelpLoadShip.cs" />
     <Compile Include="Ships\WorkGiver_RescuePawnToShip.cs" />
     <Compile Include="Ships\WorkGiver_UninstallShipWeapon.cs" />
   </ItemGroup>
