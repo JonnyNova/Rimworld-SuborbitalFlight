@@ -48,7 +48,7 @@ namespace OHUShips
 
         public Thing FindShip(Pawn pawn)
         {
-            List<ShipBase> allShips = DropShipUtility.ShipsOnMap(pawn.Map).FindAll(x => DropShipUtility.HasPassengerSeats(x));
+            List<ShipBase> allShips = DropShipUtility.ShipsOnMap(pawn.Map).FindAll(ship => ship.PassengerModule?.HasEmptySeats() ?? false);
             if (allShips.NullOrEmpty())
             {
                 return null;

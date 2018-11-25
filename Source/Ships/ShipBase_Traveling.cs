@@ -17,8 +17,6 @@ namespace OHUShips
         private bool alreadyLeft;
         public bool leavingForTarget;
         private bool launchAsFleet;
-        private bool dropPawnsOnTochdown = true;
-        private bool dropItemsOnTouchdown = false;
         private TravelingShipArrivalAction arrivalAction;
         public ShipBase containingShip;
 
@@ -108,10 +106,9 @@ namespace OHUShips
                     }
                     else
                     {
-                        List<Pawn> pawns = DropShipUtility.AllPawnsInShip(containingShip);
-                        for (int i=0; i < pawns.Count; i++)
+                        foreach(var pawn in containingShip.Passengers)
                         {
-                            Find.WorldPawns.PassToWorld(pawns[i]);
+                            Find.WorldPawns.PassToWorld(pawn);
                         }                        
                     }
                 }
@@ -149,7 +146,7 @@ namespace OHUShips
             var map = Map;
             DeSpawn();
             GenSpawn.Spawn(containingShip, position, map, containingShip.Rotation);
-            containingShip.ShipUnload(false, dropPawnsOnTochdown, dropItemsOnTouchdown);
+            containingShip.UnloadPassengers();
         }
 
         private void GroupLeftMap()

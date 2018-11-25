@@ -381,27 +381,5 @@ namespace OHUShips
                 }
             }
         }
-
-        public static void SetupShipTrading(LandedShip landedShip)
-        {
-            List<Pawn> allPawns = new List<Pawn>();
-            foreach (ShipBase current in landedShip.ships)
-            {
-                allPawns = DropShipUtility.AllPawnsInShip(current);
-                for (int k = 0; k < allPawns.Count; k++)
-                {
-                    ThingOwner innerContainer2 = current.GetDirectlyHeldThings();
-                    for (int l = 0; l < innerContainer2.Count; l++)
-                    {
-                        if (!(innerContainer2[l] is Pawn))
-                        {
-                            Pawn pawn2 = CaravanInventoryUtility.FindPawnToMoveInventoryTo(innerContainer2[l], allPawns, null, null);
-                            pawn2.inventory.innerContainer.TryAdd(innerContainer2[l], true);
-                        }
-                    }
-                }
-            }
-        }
-
     }
 }

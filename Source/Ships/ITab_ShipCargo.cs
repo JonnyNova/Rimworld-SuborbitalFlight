@@ -104,7 +104,7 @@ namespace OHUShips
 
             if (tab == Tab.Passengers)
             {
-                DrawCargo(rect3, false);
+                DrawPassengers(rect3);
             }
             else if (tab == Tab.Cargo)
             {
@@ -159,6 +159,28 @@ namespace OHUShips
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
+        private void DrawPassengers(Rect inRect)
+        {
+            Text.Font = GameFont.Small;
+            Rect rect = inRect.ContractedBy(4f);
+            GUI.BeginGroup(rect);
+            GUI.color = Color.white;
+            Rect totalRect = new Rect(0f, 0f, rect.width-50f, 300f);
+            Rect viewRect = new Rect(0f, 0f, rect.width, scrollViewHeight);
+            Widgets.BeginScrollView(totalRect, ref scrollPosition, viewRect);
+            float num = 0f;
+            Text.Font = GameFont.Small;
+            foreach (var pawn in ship.Passengers.ToList())
+            {
+                DrawThingRow(ref num, viewRect.width-100f, pawn);
+            }
+            scrollViewHeight = num + 30f;            
+            Widgets.EndScrollView();
+            GUI.EndGroup();
+            GUI.color = Color.white;
+            Text.Anchor = TextAnchor.UpperLeft;
+        }
+        
         public void DrawWeaponSlots(Rect inRect)
         {
             Rect rect1 = inRect;
@@ -363,15 +385,20 @@ namespace OHUShips
 
         private void InterfaceDrop(Thing thing, ShipBase ship)
         {
-            ship.GetDirectlyHeldThings().TryDrop(thing, ThingPlaceMode.Near, out thing);
-            if (thing is Pawn)
+            switch (thing)
             {
-                Pawn pawn = (Pawn)thing;
-                Lord LoadLord = LoadShipCargoUtility.FindLoadLord(ship, ship.Map);
-                if (LoadLord != null)
-                {
-                    LoadLord.ownedPawns.Remove(pawn);
-                }
+                case Pawn pawn:
+                    ship?.PassengerModule?.Unload(pawn);
+                    // TODO probs not needed
+                    Lord LoadLord = LoadShipCargoUtility.FindLoadLord(ship, ship.Map);
+                    if (LoadLord != null)
+                    {
+                        LoadLord.ownedPawns.Remove(pawn);
+                    }
+                    break;
+                default:
+                    ship.GetDirectlyHeldThings().TryDrop(thing, ThingPlaceMode.Near, out thing);
+                    break;
             }
         }
     }

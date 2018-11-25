@@ -4,6 +4,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FrontierDevelopments.SuborbitalFlight.Module;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -179,11 +180,9 @@ namespace OHUShips
          //   ship.def.selectable = true;
         }
 
-        public static List<Thing> CurrentFactionShips(Pawn pawn)
+        public static IEnumerable<ShipBase> CurrentFactionShips(Pawn pawn)
         {
-            List<Thing> list = pawn.Map.listerThings.AllThings.FindAll(x => x is ShipBase && x.Faction == pawn.Faction);
-
-            return list;
+            return pawn.Map.listerThings.AllThings.FindAll(x => x is ShipBase && x.Faction == pawn.Faction).Cast<ShipBase>();
         }
 
         public static List<ThingDef> AvailableDropShipsForFaction(Faction faction)
@@ -212,33 +211,18 @@ namespace OHUShips
             {
                 defs.AddRange(fixedShipDefs);
             }
-            defs.OrderBy(x => x.GetCompProperties<CompProperties_Ship>().maxPassengers);
+            defs.OrderBy(x => x.GetCompProperties<CompPropertiesPassengerModule>().seatCount);
             int num = 0;
             while (num < pawns.Count)
             {
-                ShipBase newShip = (ShipBase)ThingMaker.MakeThing(defs.RandomElementByWeight(x => x.GetCompProperties<CompProperties_Ship>().maxPassengers));
+                ShipBase newShip = (ShipBase)ThingMaker.MakeThing(defs.RandomElementByWeight(x => x.GetCompProperties<CompPropertiesPassengerModule>().seatCount));
                 newShip.SetFaction(faction);
                 newShip.ShouldSpawnFueled = true;
                 shipsToDrop.Add(newShip);
-                num += newShip.compShip.sProps.maxPassengers;
+                num += newShip.PassengerCapacity;
             }
             DropShipUtility.LoadNewCargoIntoRandomShips(pawns.Cast<Thing>().ToList(), shipsToDrop);
             return shipsToDrop;
-        }
-                
-        public static List<Pawn> AllPawnsInShip(ShipBase ship)
-        {
-            List<Pawn> tmp = new List<Pawn>();
-            for (int i = 0; i > ship.GetDirectlyHeldThings().Count; i++)
-            {
-                Pawn pawn = ship.GetDirectlyHeldThings()[i] as Pawn;
-                if (pawn != null)
-                {
-                    tmp.Add(pawn);
-                }                    
-            }
-
-            return tmp;
         }
 
         public static bool ShipIsAlreadyDropping(ShipBase ship, Map map)
@@ -484,7 +468,7 @@ namespace OHUShips
 
         public static bool HasPassengerSeats(ShipBase ship)
         {
-            return (ship.GetDirectlyHeldThings().ToList<Thing>().Count(x => x is Pawn && x.def.race.Humanlike) < ship.compShip.sProps.maxPassengers);
+            return (ship.GetDirectlyHeldThings().ToList<Thing>().Count(x => x is Pawn && x.def.race.Humanlike) < ship.PassengerModule?.Capacity);
         }
     }
 }

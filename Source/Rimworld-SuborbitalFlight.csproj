@@ -90,6 +90,7 @@
     <Compile Include="Ships\LordToil_LoadShipCargo.cs" />
     <Compile Include="Ships\LordToil_StealForShip.cs" />
     <Compile Include="Ships\Mod.cs" />
+    <Compile Include="Ships\Module\PassengerModule.cs" />
     <Compile Include="Ships\OHUShipsModSettings.cs" />
     <Compile Include="Ships\ScenPart_StartWithShip.cs" />
     <Compile Include="Ships\ShipBase.cs" />

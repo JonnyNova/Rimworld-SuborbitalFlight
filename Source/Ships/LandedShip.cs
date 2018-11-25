@@ -36,6 +36,8 @@ namespace OHUShips
             Scribe_Collections.Look<ShipBase>(ref ships, "ships", LookMode.Deep, new object[0]);
         }
 
+        public IEnumerable<Pawn> Passengers => ships.SelectMany(ship => ship.Passengers);
+        
         public Material cachedMat;
 
         public override Material Material

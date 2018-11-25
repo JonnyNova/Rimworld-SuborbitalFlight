@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using FrontierDevelopments.SuborbitalFlight.Module;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -55,6 +56,12 @@ namespace OHUShips
 
         protected CompShip compShipCached;
 
+        public CompPassengerModule PassengerModule => this.TryGetComp<CompPassengerModule>();
+
+        public IEnumerable<Pawn> Passengers => PassengerModule?.Passengers ?? new List<Pawn>();
+
+        public int PassengerCapacity => PassengerModule?.Capacity ?? 0;
+        
         public CompShip compShip
         {
             get
@@ -135,18 +142,8 @@ namespace OHUShips
                 return landedShipCached;
             }
         }
-        
-        public bool pilotPresent
-        {
-            get
-            {
-                if (landedShipCached != null)
-                {
-                    return landedShipCached.PawnsListForReading.Count > 0;
-                }
-                return innerContainer.Any(x => x is Pawn && x.Faction == Faction && x.def.race.Humanlike);
-            }
-        }
+
+        public bool pilotPresent => PassengerModule?.HasPilot ?? false;
 
         public ShipBase()
         {
@@ -310,9 +307,9 @@ namespace OHUShips
             {
                 isTargeting = false;
             }
-            for (int i=0; i < DropShipUtility.AllPawnsInShip(this).Count; i++)
+
+            foreach (var pawn in Passengers)
             {
-                Pawn pawn = DropShipUtility.AllPawnsInShip(this)[i];
                 float num = 0.6f;
                 num = 0.7f * num + 0.3f * num * StatDefOf.BedRestEffectiveness.defaultBaseValue;
                 pawn.needs.rest.TickResting(num);
@@ -421,10 +418,12 @@ namespace OHUShips
             Log.Warning("destroying " + ThingID);
             if (mode == DestroyMode.KillFinalize)
             {
+                UnloadAndInjurePassengers();
                 ShipUnload(true);
             }
             if (mode == DestroyMode.Deconstruct)
             {
+                UnloadPassengers();
                 ShipUnload(false);
             }
             if (mode == DestroyMode.Vanish)
@@ -467,57 +466,43 @@ namespace OHUShips
             base.DeSpawn(destroyMode);
         }
 
-        public void ShipUnload(bool wasDestroyed = false, bool dropPawns = true, bool dropitems = false)
+        public void UnloadPassengers()
         {
-            List<Thing> allCargo = new List<Thing>();
-            allCargo.AddRange(GetDirectlyHeldThings());
-            for (int i = 0; i < allCargo.Count; i++)
+            foreach (var pawn in Passengers.ToList())
             {
-                Thing thing = allCargo[i];
-                Thing thing2;
-                if (wasDestroyed && Rand.Range(0, 1f) < 0.3f)
-                {
-                    thing.Destroy(DestroyMode.KillFinalize);
-                }
-                else
-                {
-                    Pawn pawn1 = thing as Pawn;
-                    if (pawn1 != null && dropPawns && !pawn1.IsPrisoner && pawn1.def.race.Humanlike || (dropitems && thing.GetType() != typeof(Pawn)))
-                    {
-                        if(GetDirectlyHeldThings().TryDrop(thing, base.Position, Map, ThingPlaceMode.Near, out thing2, delegate (Thing placedThing, int count)
-                        {
-                            if (Find.TickManager.TicksGame < 1200 && TutorSystem.TutorialMode && placedThing.def.category == ThingCategory.Item)
-                            {
-                                Find.TutorialState.AddStartingItem(placedThing);
-                            }
-                        }))                            
-                        {
+                PassengerModule?.Unload(pawn);
+            }
+            SoundDef.Named("DropPodOpen").PlayOneShot(new TargetInfo(Position, Map));
+        }
 
-                        Pawn pawn2 = thing2 as Pawn;
-                            if (pawn2 != null)
-                            {
-                                if (pawn2.RaceProps.Humanlike)
-                                {
-                                    TaleRecorder.RecordTale(TaleDefOf.LandedInPod, new object[]
-                                    {
-                            pawn2
-                                    });
-                                }
-                                if (pawn2.IsColonist && pawn2.Spawned && !base.Map.IsPlayerHome)
-                                {
-                                    pawn2.drafter.Drafted = true;
-                                }
-                            }                            
-                        }
-                    }
-                    else if (dropitems && thing.GetType() != typeof(Pawn))
+        public void UnloadAndInjurePassengers()
+        {
+            foreach (var pawn in Passengers.ToList())
+            {
+                // TODO apply injuries instead of chance to kill
+                PassengerModule?.Unload(pawn);
+                if(Rand.Range(0, 1f) < 0.3f)
+                {
+                    pawn.Kill(new DamageInfo(DamageDefOf.Crush, 100));
+                }
+            }
+        }
+
+        public void ShipUnload(bool wasDestroyed = false)
+        {
+            if (GetDirectlyHeldThings() != null)
+            {
+                foreach (var thing in GetDirectlyHeldThings())
+                {
+                    Thing outThing;
+                    GetDirectlyHeldThings()
+                        .TryDrop(thing, PositionHeld, MapHeld, ThingPlaceMode.Near, out outThing);
+                    if (wasDestroyed && Rand.Range(0, 1f) < 0.3f)
                     {
-                        GetDirectlyHeldThings().TryDrop(thing, ThingPlaceMode.Near, out thing);
+                        outThing.Destroy(DestroyMode.KillFinalize);
                     }
                 }
             }
-         
-            SoundDef.Named("DropPodOpen").PlayOneShot(new TargetInfo(base.Position, base.Map, false));
         }
 
         public virtual bool TryAcceptThing(Thing thing, bool allowSpecialEffects = true)
@@ -526,39 +511,9 @@ namespace OHUShips
             {
                 return false;
             }
-            if (thing is Pawn)
+            if (thing is Pawn pawn)
             {
-                Pawn pawn = thing as Pawn;
-                if (pawn.def.race.Humanlike)
-                {
-                    if (!DropShipUtility.HasPassengerSeats(this))
-                    {
-                        Messages.Message("MessagePassengersFull".Translate(pawn.Name.ToStringSafe(), ShipNick), this, MessageTypeDefOf.RejectInput);
-                        return false;
-                    }
-					if (pawn.Spawned)
-					{
-						pawn.DeSpawn();
-					}
-                    if(!innerContainer.Contains(pawn)){
-                        //pawn.InContainerEnclosed
-						innerContainer.TryAdd(pawn, 1, false);
-                    }
-
-                }
-                else
-                {
-
-                    if (innerContainer.TryAdd(thing.SplitOff(thing.stackCount), true))
-                    {
-                        
-                        return true;
-                    }
-                    else
-                    {                        
-                        return false;
-                    }
-                }
+                return PassengerModule?.Load(pawn) ?? false;
             }
             bool flag;
             if (thing.holdingOwner != null)
@@ -584,32 +539,6 @@ namespace OHUShips
             timeToLiftoff = ticksToLiftoff;
             NoneLeftBehind = noOneLeftBehind;
         }
-               
-
-        public void WaitForLordPassengers(List<Pawn> potentialPassengers, bool noneLeftBehind = false)
-        {
-            int passengersPresent = 0;
-            for (int i = 0; i > innerContainer.Count; i++)
-            {
-                if (potentialPassengers.Any(x => innerContainer[i] == x))
-                {
-                    passengersPresent++;
-                }
-            }
-            if (noneLeftBehind && passengersPresent < potentialPassengers.Count)
-            {
-                ShouldWait = true;
-            }
-            else if (passengersPresent < potentialPassengers.Count)
-            {
-                ShouldWait = true;
-            }
-            else
-            {
-                ShouldWait = false;
-            }       
-        }
-
 
         public virtual bool Accepts(Thing thing)
         {
@@ -674,7 +603,7 @@ namespace OHUShips
                         selPawn.jobs.TryTakeOrderedJob(job);
                     }
                 };
-            if (DropShipUtility.AllPawnsInShip(this).Count < compShip.sProps.maxPassengers +1)
+            if (PassengerModule?.HasEmptySeats() ?? false)
             {
                 yield return new FloatMenuOption("EnterShip".Translate(), action, MenuOptionPriority.Default, null, null, 0f, null, null);
             }
@@ -825,17 +754,6 @@ namespace OHUShips
                     };
                     yield return command_Action5;
                 }
-            }
-
-        }
-
-        public void SavePotentialWorldPawns()
-        {
-            List<Pawn> tmp = innerContainer.Where(x => x is Pawn) as List<Pawn>;
-
-            foreach (Pawn current in tmp)
-            {
-                Find.WorldPawns.PassToWorld(current, RimWorld.Planet.PawnDiscardDecideMode.Decide);   
             }
 
         }

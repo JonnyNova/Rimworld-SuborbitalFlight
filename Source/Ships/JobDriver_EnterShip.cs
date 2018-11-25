@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using FrontierDevelopments.SuborbitalFlight.Module;
 using Verse.AI;
 
 namespace OHUShips
 {
     public class JobDriver_EnterShip : JobDriver
     {
+        private ShipBase Ship => (ShipBase) TargetThingA;
+        private CompPassengerModule PassengerModule => Ship?.PassengerModule;
+        
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return DropShipUtility.HasPassengerSeats((ShipBase) TargetThingA);
+            return PassengerModule?.HasEmptySeats() ?? false;
         }
 
         [DebuggerHidden]
@@ -20,30 +24,31 @@ namespace OHUShips
             Toil toil = new Toil();
             toil.defaultCompleteMode = ToilCompleteMode.Delay;
             toil.defaultDuration = 50;
-            toil.WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
+            toil.WithProgressBarToilDelay(TargetIndex.A);
             yield return toil;
             yield return new Toil
             {
                 initAction = delegate
                 {
-                    ShipBase ship = (ShipBase)TargetA.Thing;
+                    ShipBase ship = Ship;
                     Action action = delegate
                     {
-                        if (pawn.carryTracker.CarriedThing != null)
-                        {
-                            ship.TryAcceptThing(pawn.carryTracker.CarriedThing);
-                        }
-                        if (ship.TryAcceptThing(pawn, true))
+                        // TODO carried things go into storage
+                        if (PassengerModule?.Load(pawn) ?? false)
                         {
                             pawn.ClearMind();
                         }
+                        
+//                        if (pawn.carryTracker.CarriedThing != null)
+//                        {
+//                            ship.TryAcceptThing(pawn.carryTracker.CarriedThing);
+//                        }
                     };
 
                     action();                    
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
-            yield break;
         }
     }
 }

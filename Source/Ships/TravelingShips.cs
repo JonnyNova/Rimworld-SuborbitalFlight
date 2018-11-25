@@ -368,7 +368,7 @@ namespace OHUShips
 
         private void SpawnShipsInMap(Map map, string extraMessagePart = null)
         {
-            RemoveAllPawnsFromWorldPawns();
+//            RemoveAllPawnsFromWorldPawns();
             IntVec3 intVec;
             if (destinationCell.IsValid && destinationCell.InBounds(map))
             {

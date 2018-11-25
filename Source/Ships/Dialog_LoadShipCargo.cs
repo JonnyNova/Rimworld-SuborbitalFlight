@@ -72,13 +72,7 @@ namespace OHUShips
             }
         }
 
-        private float PassengerCapacity
-        {
-            get
-            {
-                return ship.compShip.sProps.maxPassengers;
-            }
-        }
+        private int PassengerCapacity => ship.PassengerModule?.Capacity ?? 0;
 
         private string TransportersLabelFull
         {

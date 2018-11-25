@@ -21,7 +21,6 @@ namespace OHUShips
         public int maxCargo = 1000;
         public int maxFuel = 1000;
         public float WorldMapTravelSpeedFactor = 1f;
-        public int maxPassengers = 6;
         public List<FactionDef> availableToFactions = new List<FactionDef>();
         public ThingDef LeavingShipDef;
         public string FleetIconGraphicPath = "UI/Buttons/ButtonShip";
