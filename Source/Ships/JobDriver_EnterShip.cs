@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Verse;
 using Verse.AI;
 
 namespace OHUShips
@@ -12,8 +9,7 @@ namespace OHUShips
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return true;
-            //throw new NotImplementedException();
+            return DropShipUtility.HasPassengerSeats((ShipBase) TargetThingA);
         }
 
         [DebuggerHidden]
